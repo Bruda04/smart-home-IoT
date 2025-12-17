@@ -17,7 +17,7 @@ def run_dus1(settings, threads, stop_event):
         else:
             from sensors.Ultrasonic import Ultrasonic
             print("Starting DUS1 sensor")
-            dus1_sensor = Ultrasonic(settings['trigger_pin'], settings['echo_pin'])
+            dus1_sensor = Ultrasonic(settings['pin'][0], settings['pin'][1])
 
             def sensor_loop():
                 while not stop_event.is_set():
