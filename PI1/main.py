@@ -1,6 +1,7 @@
 
 import threading
 from settings.settings import load_settings
+from components.ds1 import run_ds1
 import time
 
 try:
@@ -16,6 +17,7 @@ if __name__ == "__main__":
     threads = []
     stop_event = threading.Event()
     try:
+        run_ds1(settings['DS1'], threads, stop_event)
         while True:
             time.sleep(1)
 
