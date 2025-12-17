@@ -4,5 +4,10 @@
         "simulated": true,
         "pull_up": true,
         "bouncetime": 100
+    },
+    "DB": {
+        "pin": 27,
+        "simulated": true,
+        "type": "active"
     }
 }
