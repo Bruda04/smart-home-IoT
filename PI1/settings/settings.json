@@ -9,5 +9,9 @@
         "pin": 27,
         "simulated": true,
         "type": "active"
+    },
+    "DUS1": {
+        "pin": [23, 24],
+        "simulated": true
     }
 }

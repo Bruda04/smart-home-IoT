@@ -3,6 +3,8 @@ import threading
 from settings.settings import load_settings
 from components.ds1 import run_ds1
 from components.db import run_db
+from components.dus1 import run_dus1
+
 from console.console import console_loop
 
 from actuators.ActuatorRegistry import ActuatorRegistry
@@ -32,6 +34,7 @@ if __name__ == "__main__":
     stop_event = threading.Event()
     try:
         run_ds1(settings['DS1'], threads, stop_event)
+        run_dus1(settings['DUS1'], threads, stop_event)
 
         actuator_registry = ActuatorRegistry()
         db_actuator = run_db(settings['DB'])
