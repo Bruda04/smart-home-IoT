@@ -1,0 +1,8 @@
+{
+    "DS1": {
+        "pin": 17,
+        "simulated": true,
+        "pull_up": true,
+        "bouncetime": 100
+    }
+}
