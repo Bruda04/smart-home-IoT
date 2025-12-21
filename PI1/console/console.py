@@ -12,7 +12,7 @@ def console_loop(registry, stop_event):
                 if len(cmd) < 2:
                     print("Usage: on <actuator_name>")
                     continue
-                act = registry.get(cmd[1])
+                act = registry.get(cmd[1].upper())
                 if act:
                     act.on()
                 else:
@@ -22,7 +22,7 @@ def console_loop(registry, stop_event):
                 if len(cmd) < 2:
                     print("Usage: off <actuator_name>")
                     continue
-                act = registry.get(cmd[1])
+                act = registry.get(cmd[1].upper())
                 if act:
                     act.off()
                 else:
