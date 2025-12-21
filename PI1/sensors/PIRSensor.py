@@ -1,11 +1,6 @@
 import RPi.GPIO as GPIO
 
 class PIRSensor:
-    """Simple PIR motion sensor wrapper.
-
-    Usage:
-        pir = PIRSensor(pin=21, callback=motion_callback, bouncetime=200)
-    """
     def __init__(self, pin, callback=None, bouncetime=200):
         self.pin = pin
         self.callback = callback
