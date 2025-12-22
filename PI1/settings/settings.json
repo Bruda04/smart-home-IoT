@@ -13,5 +13,11 @@
     "DUS1": {
         "pin": [23, 24],
         "simulated": true
+    },
+    "DMS": {
+        "rows": [25, 8, 7, 1],
+        "cols": [12, 16, 20, 21],
+        "simulated": true,
+        "poll_delay": 3.9
     }
 }
