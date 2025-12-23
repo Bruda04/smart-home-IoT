@@ -4,6 +4,7 @@ from components.ds1 import run_ds1
 from components.db import run_db
 from components.dus1 import run_dus1
 from components.dms import run_dms
+from components.dpir1 import run_dpir1
 
 from console.console import console_loop
 
@@ -36,8 +37,8 @@ if __name__ == "__main__":
         run_ds1(settings['DS1'], threads, stop_event)
         run_dus1(settings['DUS1'], threads, stop_event)
         run_dms(settings['DMS'], threads, stop_event)
+        run_dpir1(settings['DPIR1'], threads, stop_event)
 
-        
         actuator_registry = ActuatorRegistry()
         db_actuator = run_db(settings['DB'])
         if db_actuator:
