@@ -5,6 +5,7 @@ from components.db import run_db
 from components.dus1 import run_dus1
 from components.dms import run_dms
 from components.dpir1 import run_dpir1
+from components.dl import run_dl
 
 from console.console import console_loop
 
@@ -43,6 +44,10 @@ if __name__ == "__main__":
         db_actuator = run_db(settings['DB'])
         if db_actuator:
             actuator_registry.register('DB', db_actuator)
+
+        dl_actuator = run_dl(settings['DL'])
+        if dl_actuator:
+            actuator_registry.register('DL', dl_actuator)
 
         console_thread = threading.Thread(target=console_loop, args=(actuator_registry, stop_event))
         console_thread.daemon = False

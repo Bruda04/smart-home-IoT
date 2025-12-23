@@ -25,5 +25,9 @@
         "simulated": true,
         "poll_delay": 1,
         "bouncetime": 200    
+    },
+    "DL": {
+        "pin": 22,
+        "simulated": true
     }
-}
+} 
