@@ -2,7 +2,6 @@ import time
 import random
 
 def generate_motion():
-    # Mostly no motion, occasional motion event
     while True:
         yield random.choice([True, False, False, False, False])
 
