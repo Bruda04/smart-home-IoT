@@ -14,6 +14,6 @@ def run_dpir1(settings, threads, stop_event):
         threads.append(dpir_thread)
         print("DPIR1 simulator started")
     else:
-        from PI1.sensors.PIRSensor import PIRSensor
+        from sensors.PIRSensor import PIRSensor
         print("Starting DPIR1 PIR sensor")
         pir = PIRSensor(pin=settings['pin'], callback=dpir_callback, bouncetime=settings.get('bouncetime', 200))
