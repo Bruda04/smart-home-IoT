@@ -1,13 +1,11 @@
 import RPi.GPIO as GPIO  # type: ignore
 
 class Button:
-    def __init__(self, pin, pull_up = True, bouncetime = 100, callback = None, publish_event = None, settings = None):
+    def __init__(self, pin, pull_up = True, bouncetime = 100, callback = None):
         self.pin = pin
         self.pull_up = pull_up
         self.bouncetime = bouncetime
         self.callback = callback
-        self.publish_event = publish_event
-        self.settings = settings
 
         GPIO.setup(self.pin,
                     GPIO.IN,
@@ -15,9 +13,6 @@ class Button:
                     )
         GPIO.add_event_detect(self.pin,
                             GPIO.RISING if self.pull_up else GPIO.FALLING,
-                            callback = self._callback_wrapper,
+                            callback = self.callback,
                             bouncetime = self.bouncetime)
         
-        def _callback_wrapper(self):
-            if self.callback is not None:
-                self.callback(self.publish_event, self.settings)
