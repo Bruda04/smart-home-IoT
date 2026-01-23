@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from influxdb_client import InfluxDBClient, Point
+from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 import paho.mqtt.client as mqtt
 import json
@@ -27,8 +27,10 @@ mqtt_client.connect(mqtt_host, mqtt_port, 60)
 mqtt_client.loop_start()
 
 def on_connect(client, userdata, flags, rc):
-    for topic in mqtt_topics:
-        client.subscribe(topic)
+    if rc == 0:
+        if not flags.get('session present', 0): 
+            for topic in mqtt_topics:
+                client.subscribe(topic)
 
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = lambda client, userdata, msg: save_to_db(json.loads(msg.payload.decode('utf-8')))
@@ -42,18 +44,10 @@ def save_to_db(data):
         .tag("runs_on", data["runs_on"])
         .tag("name", data["name"])
         .field("measurement", data["value"])
+        .time(int(data["timestamp"]), WritePrecision.NS)
     )
     write_api.write(bucket=idb_bucket, org=idb_org, record=point)
 
 
-@app.route('/store_data', methods=['POST'])
-def store_data():
-    try:
-        data = request.get_json()
-        store_data(data)
-        return jsonify({"status": "success"})
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)})
-
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=False, use_reloader=False)

@@ -113,7 +113,7 @@
       "pluginVersion": "12.3.1",
       "targets": [
         {
-          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> aggregateWindow(every: 200ms, fn: last, createEmpty: false)\r\n  |> filter(fn: (r) => r._measurement == \"DUS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n",
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DUS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n",
           "refId": "A"
         }
       ],
@@ -174,11 +174,25 @@
             "type": "influxdb",
             "uid": "dfb107mz27toga"
           },
-          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> aggregateWindow(every: 500ms, fn: last, createEmpty: false)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      state: if r._value then \"PRESSED\" else \"RELEASED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n",
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      state: if r._value then \"PRESSED\" else \"RELEASED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n",
           "refId": "A"
         }
       ],
       "title": "PI1 - DS1",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "_time"
+              }
+            ]
+          }
+        }
+      ],
       "type": "table"
     },
     {
@@ -267,12 +281,12 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "SmartHome",
   "uid": "advdt88",
-  "version": 11
+  "version": 12
 }

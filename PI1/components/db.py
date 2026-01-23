@@ -40,6 +40,7 @@ def buzzing_callback(value, publish_event, settings):
         "runs_on": settings["runs_on"],
         "name": settings["name"],
         "value": value,
+        "timestamp": time.time_ns()
     }
 
     with counter_lock:

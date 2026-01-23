@@ -39,6 +39,7 @@ def button_pressed_callback(publish_event, settings):
         "runs_on": settings["runs_on"],
         "name": settings["name"],
         "value": True,
+        "timestamp": time.time_ns()
     }
 
     with counter_lock:

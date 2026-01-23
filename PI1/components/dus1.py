@@ -39,6 +39,7 @@ def distance_callback(distance, publish_event, settings):
         "runs_on": settings["runs_on"],
         "name": settings["name"],
         "value": distance,
+        "timestamp": time.time_ns()
     }
 
     with counter_lock:
