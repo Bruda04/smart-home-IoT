@@ -26,7 +26,7 @@
         "type": "influxdb",
         "uid": "dfb107mz27toga"
       },
-      "description": "Front door button sensor",
+      "description": "Front door ultrasonic sensor",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -49,7 +49,7 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "stepAfter",
+            "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
@@ -66,23 +66,8 @@
               "mode": "off"
             }
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "color": "semi-dark-red",
-                  "index": 0
-                },
-                "1": {
-                  "color": "green",
-                  "index": 1,
-                  "text": "PRESSED"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "max": 1,
+          "mappings": [],
+          "max": 400,
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -93,7 +78,80 @@
               },
               {
                 "color": "red",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
+              }
+            ]
+          },
+          "unit": "cm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: -10m)\r\n  |> filter(fn: (r) => r._measurement == \"DUS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DUS1",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "dfb107mz27toga"
+      },
+      "description": "Front door button sensor",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "fillOpacity": 70,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
                 "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           }
@@ -103,17 +161,19 @@
       "gridPos": {
         "h": 8,
         "w": 7,
-        "x": 0,
+        "x": 12,
         "y": 0
       },
       "id": 1,
       "options": {
+        "colWidth": 0.9,
         "legend": {
-          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
+        "rowHeight": 0.9,
+        "showValue": "auto",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -127,12 +187,12 @@
             "type": "influxdb",
             "uid": "dfb107mz27toga"
           },
-          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: -20m)\r\n  |> filter(fn: (r) => r._measurement == \"DS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: if r._value then 1 else 0\r\n  }))\r\n",
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: -30m)\r\n  |> filter(fn: (r) => r._measurement == \"DS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      state: if r._value then \"PRESSED\" else \"RELEASED\",\r\n      value_num: if r._value then 1 else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n",
           "refId": "A"
         }
       ],
       "title": "PI1 - DS1",
-      "type": "timeseries"
+      "type": "status-history"
     }
   ],
   "preload": false,
@@ -142,12 +202,12 @@
     "list": []
   },
   "time": {
-    "from": "2026-01-23T05:51:15.247Z",
-    "to": "2026-01-23T16:58:06.255Z"
+    "from": "2026-01-23T12:20:30.106Z",
+    "to": "2026-01-23T12:32:08.141Z"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "SmartHome",
   "uid": "advdt88",
-  "version": 2
+  "version": 7
 }

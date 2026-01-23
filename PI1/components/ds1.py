@@ -20,7 +20,7 @@ def publisher_task(event, ds1_batch, hostname='localhost', port=1883):
             publish_data_counter = 0
             ds1_batch.clear()
         publish.multiple(local_ds1_batch, hostname=hostname, port=port)
-        print(f'published {publish_data_limit} ds1 values')
+        print(f'[PUBLISH][DS1] {publish_data_limit} values')
         event.clear()
 
 
@@ -31,10 +31,7 @@ publisher_thread.start()
 
 def button_pressed_callback(publish_event, settings):
     global publish_data_counter, publish_data_limit
-    t = time.localtime()
-    print("="*20)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print("DS1 button pressed!")
+    print(f"[DS1] pressed - {time.strftime('%H:%M:%S', time.localtime())}")
 
     ds1_payload = {
         "measurement": "DS1",

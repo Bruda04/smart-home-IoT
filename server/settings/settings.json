@@ -8,6 +8,6 @@
   "mqtt": {
     "host": "localhost",
     "port": 1883,
-    "topics": ["DS1"]
+    "topics": ["DS1", "DUS1"]
   }
 }
