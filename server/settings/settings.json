@@ -1,0 +1,13 @@
+{
+  "influxdb": {
+    "token": "_NnTGdwiAzxiDzHfBikGFbIiWPF2ujVOZZSpp6-7Yl2H95p-MD3EnNWZXTulb-iw6IpvruhXX4RKO9AKeGm3TQ==",
+    "org": "FTN",
+    "url": "http://localhost:8086",
+    "bucket": "smart_home_db"
+  },
+  "mqtt": {
+    "host": "localhost",
+    "port": 1883,
+    "topics": ["DS1"]
+  }
+}
