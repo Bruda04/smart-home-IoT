@@ -1,32 +1,44 @@
 {
   "DS1": {
+    "runs_on": "PI1",
+    "name": "DS1 - Front Door Button",
     "pin": 17,
     "simulated": true,
     "pull_up": true,
     "bouncetime": 100
   },
   "DB": {
+    "runs_on": "PI1",
+    "name": "DB - Front Door Buzzer",
     "pin": 27,
     "simulated": true,
     "type": "active"
   },
   "DUS1": {
+    "runs_on": "PI1",
+    "name": "DUS1 - Front Door Ultrasonic Sensor",
     "pin": [23, 24],
     "simulated": true
   },
   "DMS": {
+    "runs_on": "PI1",
+    "name": "DMS - Front Door Keypad",
     "rows": [25, 8, 7, 1],
     "cols": [12, 16, 20, 21],
     "simulated": true,
     "poll_delay": 3.9
   },
   "DPIR1": {
+    "runs_on": "PI1",
+    "name": "DPIR1 - Front Door Motion Sensor",
     "pin": 26,
     "simulated": true,
     "poll_delay": 1,
     "bouncetime": 200
   },
   "DL": {
+    "runs_on": "PI1",
+    "name": "DL - Front Door Light",
     "pin": 22,
     "simulated": true
   }

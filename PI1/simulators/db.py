@@ -1,10 +1,10 @@
 class DBSimulator:
-    def __init__(self):
-        pass
+    def __init__(self, callback):
+        self.callback = callback
 
     def on(self):
-        print("DB SIMULATOR IS ON")
+        self.callback(True)
     
     def off(self):
-        print("DB SIMULATOR IS OFF")
+        self.callback(False)
     

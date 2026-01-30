@@ -1,9 +1,10 @@
-import  RPi.GPIO  as GPIO
+import  RPi.GPIO  as GPIO # type: ignore
 import  time
 
 class ActiveBuzzer:
-    def __init__(self, pin):
+    def __init__(self, pin, callback):
         self.pin = pin
+        self.callback = callback
         GPIO.setup(self.pin,  GPIO.OUT)
 
     def buzz(self, pitch, duration):
@@ -18,14 +19,17 @@ class ActiveBuzzer:
 
     def on(self):
         GPIO.output(self.pin,  True)
+        self.callback(True)
 
     def off(self):
         GPIO.output(self.pin,  False)
+        self.callback(False)
 
 
 class PassiveBuzzer:
-    def __init__(self, pin, frequency=440):
+    def __init__(self, pin, callback, frequency=440):
         self.pin = pin
+        self.callback = callback
         self.frequency = frequency
 
         GPIO.setup(self.pin, GPIO.OUT)
@@ -45,8 +49,10 @@ class PassiveBuzzer:
         if not self.is_on:
             self.pwm.start(duty_cycle)
             self.is_on = True
+        self.callback(True)
 
     def off(self):
         if self.is_on:
             self.pwm.stop()
             self.is_on = False
+        self.callback(False)
