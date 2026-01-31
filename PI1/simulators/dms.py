@@ -6,8 +6,7 @@ def generate_keys():
     while True:
         yield random.choice(keys)
 
-
-def run_dms_simulator(delay, callback, stop_event):
+def run_dms_simulator(delay, callback, stop_event, publish_event, settings):
     for key in generate_keys():
         time.sleep(delay)
         if key is not None:
