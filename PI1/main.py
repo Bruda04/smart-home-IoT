@@ -13,7 +13,7 @@ from actuators.ActuatorRegistry import ActuatorRegistry
 import time
 
 try:
-    import RPi.GPIO as GPIO
+    import RPi.GPIO as GPIO # type: ignore
     GPIO.setmode(GPIO.BCM)
     HAS_GPIO = True
 except:

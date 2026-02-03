@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO  # type: ignore
 
 class Button:
     def __init__(self, pin, pull_up = True, bouncetime = 100, callback = None):
@@ -15,3 +15,4 @@ class Button:
                             GPIO.RISING if self.pull_up else GPIO.FALLING,
                             callback = self.callback,
                             bouncetime = self.bouncetime)
+        

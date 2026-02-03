@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # type: ignore
 
 class PIRSensor:
     def __init__(self, pin, callback=None, bouncetime=200):
