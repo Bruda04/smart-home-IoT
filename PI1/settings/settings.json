@@ -18,7 +18,8 @@
     "runs_on": "PI1",
     "name": "DUS1 - Front Door Ultrasonic Sensor",
     "pin": [23, 24],
-    "simulated": true
+    "simulated": true,
+    "poll_delay": 1
   },
   "DMS": {
     "runs_on": "PI1",
@@ -26,7 +27,7 @@
     "rows": [25, 8, 7, 1],
     "cols": [12, 16, 20, 21],
     "simulated": true,
-    "poll_delay": 3.9
+    "poll_delay": 0.2
   },
   "DPIR1": {
     "runs_on": "PI1",

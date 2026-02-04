@@ -59,9 +59,10 @@ def run_ds1(settings, threads, stop_event):
             print("DS1 simulator started")
         else:
             from sensors.Button import Button
-            def button_pressed_callback_wrapper():
+            def button_pressed_callback_wrapper(event=None):
                 button_pressed_callback(publish_event, settings)
             ds1 = Button(pin = settings['pin'],
                           pull_up = settings.get('pull_up', True),
                           bouncetime = settings.get('bouncetime', 100),
                           callback = button_pressed_callback_wrapper)
+            
