@@ -67,7 +67,7 @@ def run_dus1(settings, threads, stop_event):
                     distance = dus1_sensor.get_distance()
                     if distance is not None:
                         distance_callback(distance, publish_event, settings)
-                    time.sleep(1)
+                    time.sleep(settings.get('poll_delay', 1))
 
             sensor_thread = threading.Thread(target=sensor_loop)
             sensor_thread.start()
