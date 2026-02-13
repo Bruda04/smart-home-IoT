@@ -12,7 +12,7 @@ class Button:
                     pull_up_down = GPIO.PUD_UP if self.pull_up else GPIO.PUD_DOWN
                     )
         GPIO.add_event_detect(self.pin,
-                            GPIO.RISING if self.pull_up else GPIO.FALLING,
+                            GPIO.BOTH,
                             callback = self.callback,
                             bouncetime = self.bouncetime)
         

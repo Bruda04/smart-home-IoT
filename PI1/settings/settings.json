@@ -1,7 +1,11 @@
 {
+  "MQTT": {
+    "hostname": "localhost",
+    "port": 1883
+  },
   "DS1": {
     "runs_on": "PI1",
-    "name": "DS1 - Front Door Button",
+    "name": "DS1",
     "pin": 17,
     "simulated": true,
     "pull_up": true,
@@ -9,21 +13,21 @@
   },
   "DB": {
     "runs_on": "PI1",
-    "name": "DB - Front Door Buzzer",
+    "name": "DB",
     "pin": 27,
     "simulated": true,
     "type": "active"
   },
   "DUS1": {
     "runs_on": "PI1",
-    "name": "DUS1 - Front Door Ultrasonic Sensor",
+    "name": "DUS1",
     "pin": [23, 24],
     "simulated": true,
     "poll_delay": 1
   },
   "DMS": {
     "runs_on": "PI1",
-    "name": "DMS - Front Door Keypad",
+    "name": "DMS",
     "rows": [25, 8, 7, 1],
     "cols": [12, 16, 20, 21],
     "simulated": true,
@@ -31,7 +35,7 @@
   },
   "DPIR1": {
     "runs_on": "PI1",
-    "name": "DPIR1 - Front Door Motion Sensor",
+    "name": "DPIR1",
     "pin": 26,
     "simulated": true,
     "poll_delay": 1,
@@ -39,8 +43,13 @@
   },
   "DL": {
     "runs_on": "PI1",
-    "name": "DL - Front Door Light",
+    "name": "DL",
     "pin": 22,
+    "simulated": true
+  },
+  "WEBC": {
+    "runs_on": "PI1",
+    "name": "WEBC",
     "simulated": true
   }
 }

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="sr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IoT Home System - PI1 Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <style>
+      .grafana-placeholder {
+        background: #111;
+        border: 1px dashed #444;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        min-height: 250px;
+      }
+      .led-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        background-color: #374151;
+      }
+      .led-active {
+        background-color: #10b981;
+        box-shadow: 0 0 8px #10b981;
+      }
+      .led-alarm {
+        background-color: #ef4444;
+        box-shadow: 0 0 8px #ef4444;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-white font-sans">
+    <header
+      class="p-6 border-b border-gray-800 flex justify-between items-center sticky top-0 bg-gray-900 z-50"
+    >
+      <div>
+        <h1 class="text-2xl font-bold text-blue-500">
+          SmartHome - PI1 Dashboard
+        </h1>
+        <p class="text-sm text-gray-400">
+          Status:
+          <span id="connection-status" class="text-red-500">Offline</span>
+        </p>
+      </div>
+      <div
+        id="alarm-banner"
+        class="hidden bg-red-600 px-6 py-3 rounded-lg animate-pulse"
+      >
+        <span class="font-bold">⚠️ PROVALA / ALARM AKTIVAN!</span>
+        <button
+          onclick="deactivateAlarm()"
+          class="ml-4 bg-white text-red-600 px-3 py-1 rounded text-sm font-bold uppercase"
+        >
+          Unesi PIN
+        </button>
+      </div>
+    </header>
+
+    <main class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="space-y-6">
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2
+            class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2 flex justify-between"
+          >
+            PI1 Aktuatori <span>(Izlaz)</span>
+          </h2>
+          <div class="space-y-4">
+            <div
+              class="flex justify-between items-center bg-gray-700 p-3 rounded"
+            >
+              <span>Svetlo (DL)</span>
+              <div id="status-dl" class="led-indicator"></div>
+            </div>
+            <div
+              class="flex justify-between items-center bg-gray-700 p-3 rounded"
+            >
+              <span>Buzzer (DB)</span>
+              <div id="status-db" class="led-indicator"></div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+            Logika Ulaza
+          </h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-700 p-3 rounded text-center">
+              <p class="text-xs text-gray-400 uppercase">Osoba u objektu</p>
+              <p id="people-count" class="text-3xl font-mono text-blue-400">
+                0
+              </p>
+            </div>
+            <div class="bg-gray-700 p-3 rounded text-center">
+              <p class="text-xs text-gray-400 uppercase">Sistem</p>
+              <p
+                id="security-status"
+                class="text-sm font-bold text-green-400 uppercase"
+              >
+                Deaktiviran
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+            Vrata (DS1)
+          </h2>
+          <div
+            id="ds1-container"
+            class="bg-gray-700 p-4 rounded text-center transition-colors duration-300"
+          >
+            <span
+              id="ds1-text"
+              class="text-xl font-bold uppercase text-gray-400"
+              >Zatvorena</span
+            >
+          </div>
+        </section>
+      </div>
+
+      <div class="lg:col-span-1 space-y-6">
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg h-full border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4">Grafana Live (PI1)</h2>
+          <div class="space-y-4">
+            <div class="grafana-placeholder">
+              <span>[Grafikon: Pokret & Distanca]</span>
+            </div>
+            <div class="grafana-placeholder">
+              <span>[Grafikon: Istorija Alarma]</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="space-y-6">
+        <section
+          class="bg-blue-900/20 border border-blue-500/50 p-4 rounded-xl shadow-lg"
+        >
+          <h2 class="text-lg font-semibold mb-2 text-blue-400">
+            🚀 PI1 Prezentacija
+          </h2>
+          <div class="space-y-2">
+            <button
+              onclick="triggerScenario('entry')"
+              class="w-full text-left bg-blue-600 hover:bg-blue-500 p-3 rounded text-sm font-semibold transition"
+            >
+              1. Simuliraj ULAZAK (DUS1 + DPIR1)
+            </button>
+            <button
+              onclick="triggerScenario('unlocked_door')"
+              class="w-full text-left bg-orange-600 hover:bg-orange-500 p-3 rounded text-sm font-semibold transition"
+            >
+              2. Simuliraj OTVORENA VRATA > 5s
+            </button>
+            <button
+              onclick="triggerScenario('arm_system')"
+              class="w-full text-left bg-green-700 hover:bg-green-600 p-3 rounded text-sm font-semibold transition"
+            >
+              3. Aktiviraj Sistem (DMS simulacija)
+            </button>
+          </div>
+        </section>
+
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-2">Sistemski Log</h2>
+          <div
+            id="event-log"
+            class="h-64 overflow-y-auto text-xs font-mono space-y-1 text-gray-400 bg-black p-2 rounded border border-gray-700"
+          >
+            <div>> Sistem spreman za PI1...</div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const socket = io("http://localhost:5000");
+
+      socket.on("connect", () => {
+        document.getElementById("connection-status").innerText = "Online";
+        document
+          .getElementById("connection-status")
+          .classList.replace("text-red-500", "text-green-500");
+        logEvent("Veza sa serverom uspostavljena.");
+      });
+
+      socket.on("state_update", (data) => {
+        // Update People Count
+        if (data.people_count !== undefined)
+          document.getElementById("people-count").innerText = data.people_count;
+
+        // Update Alarm UI
+        const banner = document.getElementById("alarm-banner");
+        const dbLed = document.getElementById("status-db");
+        if (data.alarm_active) {
+          banner.classList.remove("hidden");
+          dbLed.classList.add("led-alarm");
+        } else {
+          banner.classList.add("hidden");
+          dbLed.classList.remove("led-alarm");
+        }
+
+        // Update Light (DL)
+        const dlLed = document.getElementById("status-dl");
+        data.dl_active
+          ? dlLed.classList.add("led-active")
+          : dlLed.classList.remove("led-active");
+
+        // Update Door (DS1)
+        const ds1Box = document.getElementById("ds1-container");
+        const ds1Text = document.getElementById("ds1-text");
+        if (data.ds1_open) {
+          ds1Box.classList.replace("bg-gray-700", "bg-orange-900/50");
+          ds1Text.innerText = "Otvorena";
+          ds1Text.classList.replace("text-gray-400", "text-orange-400");
+        } else {
+          ds1Box.classList.replace("bg-orange-900/50", "bg-gray-700");
+          ds1Text.innerText = "Zatvorena";
+          ds1Text.classList.replace("text-orange-400", "text-gray-400");
+        }
+
+        // Security Status
+        const secStatus = document.getElementById("security-status");
+        if (data.armed) {
+          secStatus.innerText = "AKTIVIRAN (ARMS)";
+          secStatus.classList.replace("text-green-400", "text-red-400");
+        } else {
+          secStatus.innerText = "DEAKTIVIRAN";
+          secStatus.classList.replace("text-red-400", "text-green-400");
+        }
+
+        if (data.msg) logEvent(data.msg);
+      });
+
+      function triggerScenario(type) {
+        socket.emit("trigger_scenario", { scenario: type });
+        logEvent(`Komanda: Pokretanje scenarija ${type}`);
+      }
+
+      function deactivateAlarm() {
+        const pin = prompt("Unesite četvorocifreni PIN za PI1:");
+        if (pin) socket.emit("deactivate_alarm", { pin: pin });
+      }
+
+      function logEvent(msg) {
+        const log = document.getElementById("event-log");
+        const entry = document.createElement("div");
+        entry.innerHTML = `<span class="text-blue-500">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+        log.prepend(entry);
+      }
+    </script>
+  </body>
+</html>
