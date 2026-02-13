@@ -1,0 +1,61 @@
+{
+  "MQTT": {
+    "hostname": "localhost",
+    "port": 1883
+  },
+  "DS2": {
+    "runs_on": "PI2",
+    "name": "DS2",
+    "pin": 5,
+    "simulated": true,
+    "bouncetime": 100
+  },
+  "DUS2": {
+    "runs_on": "PI2",
+    "name": "DUS2",
+    "pin": [16, 20],
+    "simulated": true,
+    "poll_delay": 1
+  },
+  "DPIR2": {
+    "runs_on": "PI2",
+    "name": "DPIR2",
+    "pin": 12,
+    "simulated": true,
+    "poll_delay": 1,
+    "bouncetime": 200
+  },
+  "4SD": {
+    "runs_on": "PI2",
+    "name": "4SD",
+    "segments": [7, 8, 25, 23, 18, 4, 10, 11],
+    "digits": [24, 17, 27, 22],
+    "simulated": true,
+    "delta": 10
+  },
+  "BTN": {
+    "runs_on": "PI2",
+    "name": "BTN",
+    "pin": 21,
+    "simulated": true,
+    "pull_up": true,
+    "bouncetime": 100
+  },
+  "DHT3": {
+    "runs_on": "PI2",
+    "name": "DHT3",
+    "pin": 26,
+    "simulated": true,
+    "poll_delay": 2
+  },
+  "GSG": {
+    "runs_on": "PI2",
+    "name": "GSG",
+    "pin": [2, 3],
+    "simulated": true,
+    "poll_delay": 0.2,
+    "accel_threshold_g": 0.3,
+    "gyro_threshold_dps": 50,
+    "cooldown_time_s": 2
+  }
+}
