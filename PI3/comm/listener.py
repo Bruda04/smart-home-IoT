@@ -9,8 +9,8 @@ def start_listener(settings, actuator_registry, stop_event):
     client = mqtt.Client()
 
     def on_connect(client, userdata, flags, rc):
-        client.subscribe("commands/PI2/#")
-        print("[COMM] Listener connected and subscribed to PI2 commands")
+        client.subscribe("commands/PI3/#")
+        print("[COMM] Listener connected and subscribed to PI3 commands")
 
     def on_message(client, userdata, msg):
         try:
@@ -21,17 +21,22 @@ def start_listener(settings, actuator_registry, stop_event):
             actuator = actuator_registry.get(actuator_name)
             
             if actuator:
-                if actuator_name == '4SD':
-                    action = payload.get('action')
-                    if action == 'set_time':
-                        minutes = payload.get('minutes', 0)
-                        seconds = payload.get('seconds', 0)
-                        actuator.set_time(minutes, seconds)
-                    elif action == 'add_seconds':
-                        actuator.add_seconds()
-                    elif action == 'set_add_seconds':
-                        delta = payload.get('delta', 10)
-                        actuator.set_add_seconds(delta)
+                if actuator_name == 'LCD':
+                    action = payload.get('action', '')
+                    if action == 'display':
+                        text = payload.get('text', '')
+                        actuator.display(text)
+                    elif action == 'clear':
+                        actuator.clear()
+                elif actuator_name == 'BRGB':
+                    action = payload.get('action', '')
+                    if action == 'set_color':
+                        color = payload.get('color', [0, 0, 0])
+                        actuator.set_color(*color)
+                    elif action == 'on':
+                        actuator.on()
+                    elif action == 'off':
+                        actuator.off()
                     
                 print(f"[COMM][{actuator_name}] Command received for {actuator_name}: {payload}")
         except Exception as e:

@@ -1,0 +1,46 @@
+{
+  "MQTT": {
+    "hostname": "localhost",
+    "port": 1883
+  },
+  "DHT1": {
+    "runs_on": "PI3",
+    "name": "DHT1",
+    "pin": 4,
+    "simulated": true,
+    "poll_delay": 2
+  },
+  "DHT2": {
+    "runs_on": "PI3",
+    "name": "DHT2",
+    "pin": 17,
+    "simulated": true,
+    "poll_delay": 2
+  },
+  "IR": {
+    "runs_on": "PI3",
+    "name": "IR",
+    "pin": 27,
+    "simulated": true
+  },
+  "BRGB": {
+    "runs_on": "PI3",
+    "name": "BRGB",
+    "pin": [12, 13, 19],
+    "simulated": true
+  },
+  "LCD": {
+    "runs_on": "PI3",
+    "name": "LCD",
+    "pin": [2, 3],
+    "simulated": true
+  },
+  "DPIR3": {
+    "runs_on": "PI3",
+    "name": "DPIR3",
+    "pin": 22,
+    "simulated": true,
+    "poll_delay": 1,
+    "bouncetime": 200
+  }
+}
