@@ -115,6 +115,10 @@ def process_person_entering(name, val):
                 state["people_count"] += 1
             else:
                 state["people_count"] = max(0, state["people_count"] - 1)
+                try:
+                    socketio.emit('state_update', state)
+                except Exception:
+                    pass
 
     # updating the top 5 measurements
     if name in dus_map:
@@ -124,11 +128,11 @@ def process_person_entering(name, val):
         if len(last_dus_values) > 5: last_dus_values.pop(0)
 
 
-# 1. DPIR1 & DL1 (ligth for 10s)
+# 1. DPIR1 & DL (ligth for 10s)
 def turn_on_light_for_10s(name, val):
     if name == "DPIR1" and val == True:
-        mqtt_client.publish("commands/PI1/DL1", json.dumps({"value": True}))
-        Timer(10, lambda: mqtt_client.publish("commands/PI1/DL1", json.dumps({"value": False}))).start()
+        mqtt_client.publish("commands/PI1/DL", json.dumps({"value": True}))
+        Timer(10, lambda: mqtt_client.publish("commands/PI1/DL", json.dumps({"value": False}))).start()
         
 
 #3 DS1/2 (Vrata otvorena > 5s)
@@ -294,6 +298,7 @@ def process_logic(data):
                     # Alarm armed after 10 seconds!
                     state["armed"] = True
                     save_event_to_db("ARMED", "System armed by user.")
+                    socketio.emit('state_update', state)
         
                 Timer(10, arm_alarm).start()
     
@@ -360,6 +365,11 @@ def trigger_alarm(reason):
     socketio.emit('alarm_triggered', {"reason": reason})
     save_event_to_db("ALARM", reason)
 
+    try:
+        socketio.emit('state_update', state)
+    except Exception:
+        pass
+
 def deactivate_alarm():
     state["alarm_active"] = False
     mqtt_client.publish("commands/PI1/DB", json.dumps({"value": False}))
@@ -367,7 +377,23 @@ def deactivate_alarm():
     socketio.emit('alarm_stopped', {})
     save_event_to_db("ALARM_STOPPED", "Alarm deactivated by user.")
 
+    try:
+        socketio.emit('state_update', state)
+    except Exception:
+        pass
+
 # --- SOCKET IO ENDPOINTS ---
+@socketio.on('connect')
+def handle_connect():
+    # send current system state when a client connects
+    try:
+        socketio.emit('state_update', state)
+    except Exception:
+        pass
+
+
+
+
 @socketio.on('deactivate_alarm')
 def handle_pin(data):
     if data['pin'] == conf.get("pin", "1234"):
@@ -397,10 +423,27 @@ def sw(data):
 
 @socketio.on('trigger_scenario')
 def handle_scenario(data):
-    if data['scenario'] == 'entry':
-        process_logic({"name": "DUS1", "value": 150})
-        process_logic({"name": "DUS1", "value": 50})
-        process_logic({"name": "DPIR1", "value": 1})
+    if data['scenario'] == 'alarm_on':
+        print("sc: alarm on")
+        process_logic({"name": "GSG", "value": True})
+    
+
+    if data["scenario"] == "correct_pin":
+        print("sc: correct pin -> arm after 10")
+        process_logic({"name": "DMS", "value": "1"})
+        process_logic({"name": "DMS", "value": "2"})
+        process_logic({"name": "DMS", "value": "3"})
+        process_logic({"name": "DMS", "value": "4"})
+
+    if data["scenario"] == "dpir1_detects":
+        print("sc: dpir1 -> DL on for 10")
+        process_logic({"name": "DPIR1", "value": "True"})
+
+    if data["scenario"] == "ds12_detected":
+        print("sc: ds12 detected -> 20s for pin")
+        saved_vals["ds1_pressed"] = True
+        process_logic({"name": "DS1", "value": "True"})
+        
 
 if __name__ == '__main__':
     rotation_thread = threading.Thread(target=lcd_rotation_task)

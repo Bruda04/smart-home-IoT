@@ -62,13 +62,11 @@
               class="flex justify-between items-center bg-gray-700 p-3 rounded"
             >
               <span>Svetlo (DL)</span>
-              <div id="status-dl" class="led-indicator"></div>
             </div>
             <div
               class="flex justify-between items-center bg-gray-700 p-3 rounded"
             >
               <span>Buzzer (DB)</span>
-              <div id="status-db" class="led-indicator"></div>
             </div>
           </div>
           <!-- PI2 Aktuatori -->
@@ -76,14 +74,7 @@
             <div
               class="flex justify-between items-center bg-gray-700 p-3 rounded"
             >
-              <span>Svetlo (DL)</span>
-              <div id="status-dl-pi2" class="led-indicator"></div>
-            </div>
-            <div
-              class="flex justify-between items-center bg-gray-700 p-3 rounded"
-            >
-              <span>Buzzer (DB)</span>
-              <div id="status-db-pi2" class="led-indicator"></div>
+              <span>Displej tajmer (4SD)</span>
             </div>
           </div>
           <!-- PI3 Aktuatori -->
@@ -91,14 +82,12 @@
             <div
               class="flex justify-between items-center bg-gray-700 p-3 rounded"
             >
-              <span>Svetlo (DL)</span>
-              <div id="status-dl-pi3" class="led-indicator"></div>
+              <span>Displej (LCD)</span>
             </div>
             <div
               class="flex justify-between items-center bg-gray-700 p-3 rounded"
             >
-              <span>Buzzer (DB)</span>
-              <div id="status-db-pi3" class="led-indicator"></div>
+              <span>Soba RBG (BRGB)</span>
             </div>
           </div>
         </section>
@@ -159,60 +148,7 @@
           </div>
         </section>
 
-        <!-- RGB SIJALICA - Kontrola boje i uključivanja/isključivanja -->
-        <section
-          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
-        >
-          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
-            💡 RGB Sijalica
-          </h2>
-          <div class="space-y-3">
-            <!-- RGB Sijalica Prikaz Boje -->
-            <div class="flex items-center gap-3">
-              <div
-                id="rgb-preview"
-                class="w-16 h-16 rounded-full border-2 border-gray-600 bg-red-500 transition-all"
-              ></div>
-              <div class="flex-1">
-                <p class="text-xs text-gray-400 uppercase mb-2">
-                  Odabrana boja
-                </p>
-                <input
-                  id="rgb-color-picker"
-                  type="color"
-                  value="#ff0000"
-                  onchange="updateRGBPreview()"
-                  class="w-full h-8 cursor-pointer rounded"
-                />
-              </div>
-            </div>
-            <!-- RGB Kontrole -->
-            <div class="grid grid-cols-2 gap-2">
-              <button
-                onclick="sendRGBCommand('on')"
-                class="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-sm font-semibold transition"
-              >
-                🔆 Uključi
-              </button>
-              <button
-                onclick="sendRGBCommand('off')"
-                class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded text-sm font-semibold transition"
-              >
-                🔅 Isključi
-              </button>
-            </div>
-            <!-- RGB Pošalji -->
-            <button
-              onclick="sendRGBCommand('set')"
-              class="w-full bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded text-sm font-semibold transition"
-            >
-              📤 Pošalji Boju
-            </button>
-            <p id="rgb-status" class="text-xs text-gray-400 mt-2 text-center">
-              Status: Isključeno
-            </p>
-          </div>
-        </section>
+
       </div>
 
       <!-- ===== SREDNJA KOLONA / MIDDLE COLUMN ===== -->
@@ -285,6 +221,61 @@
             </button>
           </div>
         </section>
+
+                <!-- RGB SIJALICA - Kontrola boje i uključivanja/isključivanja -->
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+            💡 RGB Sijalica
+          </h2>
+          <div class="space-y-3">
+            <!-- RGB Sijalica Prikaz Boje -->
+            <div class="flex items-center gap-3">
+              <div
+                id="rgb-preview"
+                class="w-16 h-16 rounded-full border-2 border-gray-600 bg-red-500 transition-all"
+              ></div>
+              <div class="flex-1">
+                <p class="text-xs text-gray-400 uppercase mb-2">
+                  Odabrana boja
+                </p>
+                <input
+                  id="rgb-color-picker"
+                  type="color"
+                  value="#ff0000"
+                  onchange="updateRGBPreview()"
+                  class="w-full h-8 cursor-pointer rounded"
+                />
+              </div>
+            </div>
+            <!-- RGB Kontrole -->
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                onclick="sendRGBCommand('on')"
+                class="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-sm font-semibold transition"
+              >
+                🔆 Uključi
+              </button>
+              <button
+                onclick="sendRGBCommand('off')"
+                class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded text-sm font-semibold transition"
+              >
+                🔅 Isključi
+              </button>
+            </div>
+            <!-- RGB Pošalji -->
+            <button
+              onclick="sendRGBCommand('set')"
+              class="w-full bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded text-sm font-semibold transition"
+            >
+              📤 Pošalji Boju
+            </button>
+            <p id="rgb-status" class="text-xs text-gray-400 mt-2 text-center">
+              Status: Isključeno
+            </p>
+          </div>
+        </section>
       </div>
 
       <!-- ===== DESNA KOLONA / RIGHT COLUMN ===== -->
@@ -294,26 +285,35 @@
           class="bg-blue-900/20 border border-blue-500/50 p-4 rounded-xl shadow-lg"
         >
           <h2 class="text-lg font-semibold mb-2 text-blue-400">
-            🚀 PI1 Prezentacija
+            🚀 Test scenariji
           </h2>
           <div class="space-y-2">
             <button
-              onclick="triggerScenario('entry')"
+              onclick="triggerScenario('correct_pin')"
               class="w-full text-left bg-blue-600 hover:bg-blue-500 p-3 rounded text-sm font-semibold transition"
             >
-              1. Simuliraj ULAZAK
+              4.a Simuliraj unosenje pravog pina (unarmed -> armed)
             </button>
+
             <button
-              onclick="triggerScenario('unlocked_door')"
-              class="w-full text-left bg-orange-600 hover:bg-orange-500 p-3 rounded text-sm font-semibold transition"
-            >
-              2. Simuliraj OTVORENA VRATA
-            </button>
-            <button
-              onclick="triggerScenario('arm_system')"
+              onclick="triggerScenario('ds12_detected')"
               class="w-full text-left bg-green-700 hover:bg-green-600 p-3 rounded text-sm font-semibold transition"
             >
-              3. Aktiviraj Sistem
+              4.b. Detektovano na DS1/2 imas 20s za pin
+            </button>
+
+            <button
+              onclick="triggerScenario('alarm_on')"
+              class="w-full text-left bg-green-700 hover:bg-green-600 p-3 rounded text-sm font-semibold transition"
+            >
+              6. Simuliraj GSG - Alarm on
+            </button>
+
+            <button
+              onclick="triggerScenario('dpir1_detects')"
+              class="w-full text-left bg-green-700 hover:bg-green-600 p-3 rounded text-sm font-semibold transition"
+            >
+              1. Simuliraj DPIR1 detekciju (ukluci DL na 10s)
             </button>
           </div>
         </section>
@@ -348,11 +348,8 @@
     <section
       class="p-6 bg-gray-800 m-6 rounded-xl shadow-lg border border-gray-700"
     >
-      <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
-        📊 Grafana Live Dashboard
-      </h2>
       <iframe
-        src="http://localhost:3000/public-dashboards/890121d617424fe5887566cfa1e6574b"
+        src="http://localhost:3000/public-dashboards/31109d01da9648ab85dfd32347206fe1"
         class="w-full rounded"
         style="height: 1500px; border: none"
         frameborder="0"

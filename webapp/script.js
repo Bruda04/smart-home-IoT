@@ -59,10 +59,8 @@ socket.on("state_update", (data) => {
   const alarmToggleBtn = document.getElementById("alarm-toggle-btn");
 
   if (data.alarm_active !== undefined) {
-    const dbLed = document.getElementById("status-db");
     if (data.alarm_active) {
       banner.classList.remove("hidden");
-      dbLed.classList.add("led-alarm");
       alarmStatusSection.classList.replace("bg-gray-700", "bg-red-900/50");
       alarmStatusText.innerText = "Alarm ON";
       alarmStatusText.classList.replace("text-gray-400", "text-red-400");
@@ -70,7 +68,6 @@ socket.on("state_update", (data) => {
       logEvent("🚨 ALARM je AKTIVIRAN!");
     } else {
       banner.classList.add("hidden");
-      dbLed.classList.remove("led-alarm");
       alarmStatusSection.classList.replace("bg-red-900/50", "bg-gray-700");
       alarmStatusText.innerText = "Alarm OFF";
       alarmStatusText.classList.replace("text-red-400", "text-gray-400");
@@ -330,16 +327,7 @@ function startTimer() {
   }, 1000);
 }
 
-// Dodaj N sekundi na trenutno vreme
-function addTimeToTimer() {
-  const increment =
-    parseInt(document.getElementById("timer-increment").value) || 0;
-  timerSeconds += increment;
-  document.getElementById("timer-status").innerText =
-    `Status: ➕ ${increment}s dodano`;
-  logEvent(`Štoperica: Dodano ${increment} sekundi`);
-  updateTimerDisplay();
-}
+
 
 // Pošalji podatke štoperice serveru
 function sendTimerToServer() {
