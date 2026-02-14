@@ -15,6 +15,12 @@
 
 // ===== INICIJALIZACIJA SOCKET.IO KONEKCIJE =====
 const socket = io("http://localhost:5000");
+const grafanaUrl =
+  "http://localhost:3000/public-dashboards/68b02c4fd9e244bba807d7c7ec9af07e";
+const webcamUrl = "http://192.168.107.147:8080/?action=stream";
+
+document.getElementById("grafana-iframe").src = grafanaUrl;
+document.getElementById("webcam-stream").src = webcamUrl;
 
 // Objekat za skladištenje stanja aktuatora za sve PI računare
 const actuatorData = {

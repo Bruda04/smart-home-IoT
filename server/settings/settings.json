@@ -1,6 +1,6 @@
 {
   "influxdb": {
-    "token": "tOTwI2WUlExNlPzA2zZ1_KtPkYP1WbFHWl2ODfOfFbNhGVK4brn2w8819K9z90uOP0u28oH_pwbu_OfDJDfPcQ==",
+    "token": "XqlmYk98Mgh6OulMnmWZdjznPApTg5SLjVgbvH6hBQ8D3FAAJ3Hnc-ePV6COCE2eLheeopzPPAhdPRLqs8kQZQ==",
     "org": "FTN",
     "url": "http://localhost:8086",
     "bucket": "smart_home_db"

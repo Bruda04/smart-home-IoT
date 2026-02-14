@@ -6,6 +6,7 @@ class Button:
         self.pull_up = pull_up
         self.bouncetime = bouncetime
         self.callback = callback
+        self.pressed = False
 
         if pull_up is None:
             self.edge = GPIO.BOTH
@@ -19,8 +20,12 @@ class Button:
                     GPIO.IN,
                     pull_up_down = GPIO.PUD_UP if self.pull_up else GPIO.PUD_DOWN
                     )
+        def button_callback(channel):
+            self.pressed = not self.pressed
+            if self.callback is not None:
+                self.callback(self.pressed)
         GPIO.add_event_detect(self.pin,
                             self.edge,
-                            callback = self.callback,
+                            callback = button_callback,
                             bouncetime = self.bouncetime)
         
