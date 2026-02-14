@@ -310,17 +310,20 @@ def process_logic(data):
         if saved_vals[ds_pressed]: 
             def alarm():
                 trigger_alarm(f"{name} detected door opening while system is armed!")
-            Timer(20, alarm).start()
+            Timer(4, alarm).start()
             
 
     #5 
-    if name.startswith("DPIR") and val == True and state["people_count"] == 0: trigger_alarm(f"{name} detected movement in empty house!")
+    if name.startswith("DPIR") and val == True and state["people_count"] == 0: 
+        trigger_alarm(f"{name} detected movement in empty house!")
 
     #6
-    if name == "GSG" and val == True:  trigger_alarm(f"{name}")
+    if name == "GSG" and val == True:  
+        trigger_alarm(f"{name}")
 
     #7 update temp and humidity
-    if name.startswith("DHT"): update_dht_values(data["measurement"], val)
+    if name.startswith("DHT"): 
+        update_dht_values(data["measurement"], val)
 
     #8 stoperica TO DO 
     if name == "BTN" and val == True:
@@ -439,14 +442,14 @@ def handle_scenario(data):
 
     if data["scenario"] == "ds12_detected":
         print("sc: ds12 detected -> 20s for pin")
-        saved_vals["ds1_pressed"] = True
+        saved_vals["ds1_pressed"] = False
+        saved_vals["ds1_start_time"] = time.time() - 2
         process_logic({"name": "DS1", "value": True})
 
     if data["scenario"] == "empty_house_movement":
         state["people_count"] = 0
         socketio.emit('state_update', state)
         process_logic({"name": "DPIR1", "value": True})
-
 
         
 
