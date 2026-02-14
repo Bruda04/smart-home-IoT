@@ -31,7 +31,7 @@ def start_listener(settings, actuator_registry, stop_event):
                 elif actuator_name == 'BRGB':
                     action = payload.get('action', '')
                     if action == 'set_color':
-                        color = payload.get('color', [0, 0, 0])
+                        color = payload.get('color', (0, 0, 0))
                         actuator.set_color(*color)
                     elif action == 'on':
                         actuator.on()

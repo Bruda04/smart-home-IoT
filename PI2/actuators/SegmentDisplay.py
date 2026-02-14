@@ -46,9 +46,10 @@ class StopwatchDisplay:
 
     def add_seconds(self):
         with self.lock:
-            if self.blinking:
-                self.start_time = time.time()
+            if self.blinking and self.total_seconds == 0:
                 self.blinking = False
+                self.current_value = "0000"
+                return
             self.total_seconds += self.add_delta_seconds
 
     def set_add_seconds(self, seconds):

@@ -21,7 +21,7 @@ def start_listener(settings, actuator_registry, stop_event):
             actuator = actuator_registry.get(actuator_name)
             
             if actuator:
-                if actuator_name == '4SD':
+                if actuator_name == 'SD':
                     action = payload.get('action')
                     if action == 'set_time':
                         minutes = payload.get('minutes', 0)

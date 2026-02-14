@@ -33,7 +33,12 @@ saved_vals = {
         "DHT3": {"temp": None, "hum": None},
     },
     "current_dht_index": 0,
-    "inputed": []
+    "inputed": [],
+    "brgb": {
+        "is_on": False,
+        "color": (255, 255, 255)
+    },
+    "sw_time": "0000"
 }
 
 conf = load_settings()
@@ -196,6 +201,68 @@ def check_pin():
         return True
     return False
 
+#8 Stoperica
+def extend_sw():
+    mqtt_client.publish(
+        "commands/PI2/4SD",
+        json.dumps({
+            "action": "add_seconds"
+        })
+    )
+
+def update_sw_time(val):
+    saved_vals["sw_time"] = val
+    socketio.emit('sw_time_update', {"time": val})
+
+def set_sw_time(minutes, seconds):
+    saved_vals["sw_time"] = f"{minutes}{seconds}"
+    mqtt_client.publish(
+        "commands/PI2/SD",
+        json.dumps({
+            "action": "set_time",
+            "minutes": minutes,
+            "seconds": seconds
+        })
+    )
+
+def set_add_seconds(n):
+    mqtt_client.publish(
+        "commands/PI2/SD",
+        json.dumps({
+            "action": "set_add_seconds",
+            "delta": n
+        })
+    )
+
+# 9 RGB
+def set_color(val):
+    saved_vals["brgb"]["color"] = val
+    mqtt_client.publish(
+        "commands/PI3/BRGB",
+        json.dumps({
+            "action": "set_color",
+            "color": val
+        })
+    )
+
+def rgb_off():
+    saved_vals["brgb"]["is_on"] = False
+    mqtt_client.publish(
+        "commands/PI3/BRGB",
+        json.dumps({
+            "action": "off"
+        })
+    )
+
+def rgb_on():
+    saved_vals["brgb"]["is_on"] = True
+    mqtt_client.publish(
+        "commands/PI3/BRGB",
+        json.dumps({
+            "action": "on"
+        })
+    )
+
 # consequences to the system from what pi reports
 def process_logic(data):
     name = data['name']
@@ -252,8 +319,29 @@ def process_logic(data):
     if name.startswith("DHT"): update_dht_values(name, val)
 
     #8 stoperica TO DO 
+    if name == "BTN" and val == True:
+        extend_sw()
+    if name == "SD":
+        update_sw_time(val)
 
-    #9 TO DO
+    #9 BRGB
+    if name == "IR":
+        button_color_map = {
+            "2": (255, 0, 0),  # Red
+            "3": (0, 255, 0),  # Green
+            "4": (0, 0, 255),  # Blue
+            "5": (255, 255, 0),# Yellow
+            "6": (255, 0, 255),# Magenta
+            "7": (255, 255, 255), # White
+            "8": (0, 255, 255), # Cyan
+            "9": (255, 165, 0) # Orange
+        }
+        if val in button_color_map:
+            set_color(button_color_map[val])
+        elif val == "0":
+            rgb_off()
+        elif val == "1":
+            rgb_on()
 
 
 def display_alarm_state():
@@ -283,6 +371,28 @@ def deactivate_alarm():
 def handle_pin(data):
     if data['pin'] == conf.get("pin", "1234"):
         deactivate_alarm()
+
+@socketio.on('rgb_control')
+def brgb(data):
+    action = data.get("command")
+    if action == "set":
+        color = data.get("color")
+        set_color(color)
+    elif action == "on":
+        rgb_on()
+    elif action == "off":
+        rgb_off()
+
+@socketio.on('sw_command')
+def sw(data):
+    action = data.get("command")
+    if action == "set_add_seconds":
+        n = data.get("delta")
+        set_add_seconds(n)
+    elif action == "set_time":
+        minutes = data.get("minutes")
+        seconds = data.get("seconds")
+        set_sw_time(minutes, seconds)
 
 @socketio.on('trigger_scenario')
 def handle_scenario(data):

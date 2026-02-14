@@ -20,13 +20,13 @@ const socket = io("http://localhost:5000");
 const actuatorData = {
   pi1: { dl_active: false, db_active: false },
   pi2: { dl_active: false, db_active: false },
-  pi3: { dl_active: false, db_active: false }
+  pi3: { dl_active: false, db_active: false },
 };
 
 // Objekat za RGB sijalicu
 const rgbData = {
   power: false,
-  color: "#ff0000" // Crvena
+  color: "#ff0000", // Crvena
 };
 
 // ================================================================
@@ -36,7 +36,8 @@ const rgbData = {
 // Događaj: Konekcija sa serverom uspostavljena
 socket.on("connect", () => {
   document.getElementById("connection-status").innerText = "Online";
-  document.getElementById("connection-status")
+  document
+    .getElementById("connection-status")
     .classList.replace("text-red-500", "text-green-500");
   logEvent("✅ Veza sa serverom uspostavljena.");
 });
@@ -156,7 +157,7 @@ function updateActuatorLEDs(pi) {
   const ledMap = {
     pi1: { dl: "status-dl", db: "status-db" },
     pi2: { dl: "status-dl-pi2", db: "status-db-pi2" },
-    pi3: { dl: "status-dl-pi3", db: "status-db-pi3" }
+    pi3: { dl: "status-dl-pi3", db: "status-db-pi3" },
   };
 
   const ids = ledMap[pi];
@@ -198,7 +199,7 @@ function sendRGBCommand(command) {
   const color = document.getElementById("rgb-color-picker").value;
   const payload = {
     command: command,
-    color: color
+    color: color,
   };
 
   socket.emit("rgb_control", payload);
@@ -233,7 +234,8 @@ function updateRGBStatus() {
 // Rukuj greškama pri učitavanju web kamere
 function handleWebcamError() {
   const status = document.getElementById("webcam-status");
-  status.innerHTML = '<span class="text-red-400">❌ Stream nije dostupan. Proveri URL.</span>';
+  status.innerHTML =
+    '<span class="text-red-400">❌ Stream nije dostupan. Proveri URL.</span>';
 }
 
 // ================================================================
@@ -295,7 +297,8 @@ function updateTimerDisplay() {
     isExpired = true;
     clearInterval(timerInterval);
     blinkDiv.classList.remove("hidden");
-    document.getElementById("timer-status").innerText = "Status: ⏰ VRIJEME ISTEKLO!";
+    document.getElementById("timer-status").innerText =
+      "Status: ⏰ VRIJEME ISTEKLO!";
   }
 
   display.innerText = formatTime(timerSeconds);
@@ -329,9 +332,11 @@ function startTimer() {
 
 // Dodaj N sekundi na trenutno vreme
 function addTimeToTimer() {
-  const increment = parseInt(document.getElementById("timer-increment").value) || 0;
+  const increment =
+    parseInt(document.getElementById("timer-increment").value) || 0;
   timerSeconds += increment;
-  document.getElementById("timer-status").innerText = `Status: ➕ ${increment}s dodano`;
+  document.getElementById("timer-status").innerText =
+    `Status: ➕ ${increment}s dodano`;
   logEvent(`Štoperica: Dodano ${increment} sekundi`);
   updateTimerDisplay();
 }
@@ -342,7 +347,7 @@ function sendTimerToServer() {
     const payload = {
       time_remaining: timerSeconds,
       formatted_time: formatTime(timerSeconds),
-      is_running: isRunning
+      is_running: isRunning,
     };
     socket.emit("timer_update", payload);
     logEvent(`📤 Štoperica poslana serveru: ${formatTime(timerSeconds)}`);
