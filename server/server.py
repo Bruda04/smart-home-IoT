@@ -159,8 +159,6 @@ def did_i_leave_the_door_open(name, val):
             trigger_alarm(f"{name} reported door left open for more than 5 seconds!")
         saved_vals[ds_start_time] = None
 
-
-
 # 7 "measurement": "DHT1-Temperature", "measurement": "DHT1-Humidity",
 def lcd_rotation_task():
     while True:
@@ -437,12 +435,19 @@ def handle_scenario(data):
 
     if data["scenario"] == "dpir1_detects":
         print("sc: dpir1 -> DL on for 10")
-        process_logic({"name": "DPIR1", "value": "True"})
+        process_logic({"name": "DPIR1", "value": True})
 
     if data["scenario"] == "ds12_detected":
         print("sc: ds12 detected -> 20s for pin")
         saved_vals["ds1_pressed"] = True
-        process_logic({"name": "DS1", "value": "True"})
+        process_logic({"name": "DS1", "value": True})
+
+    if data["scenario"] == "empty_house_movement":
+        state["people_count"] = 0
+        socketio.emit('state_update', state)
+        process_logic({"name": "DPIR1", "value": True})
+
+
         
 
 if __name__ == '__main__':
