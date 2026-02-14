@@ -288,11 +288,13 @@ def process_logic(data):
                     deactivate_alarm()
                 else:
                     state["armed"] = False
+                    save_event_to_db("DISARMED", "System disarmed by user.")
             else:
                 #a
                 def arm_alarm():
                     # Alarm armed after 10 seconds!
                     state["armed"] = True
+                    save_event_to_db("ARMED", "System armed by user.")
         
                 Timer(10, arm_alarm).start()
     
