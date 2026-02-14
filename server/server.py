@@ -352,6 +352,9 @@ def process_logic(data):
         elif val == "1":
             rgb_on()
 
+        socketio.emit('brgb_update', saved_vals["brgb"])
+
+
 
 def display_alarm_state():
     mqtt_client.publish("commands/PI1/DB", json.dumps({"value": True}))

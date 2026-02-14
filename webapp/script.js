@@ -102,20 +102,24 @@ socket.on("state_update", (data) => {
     }
   }
 
-  // Update: RGB Sijalica status
-  if (data.rgb_active !== undefined) {
-    rgbData.power = data.rgb_active;
-    updateRGBStatus();
-  }
-
-  if (data.rgb_color !== undefined) {
-    rgbData.color = data.rgb_color;
-    document.getElementById("rgb-color-picker").value = data.rgb_color;
-    updateRGBPreview();
-  }
-
   // Log poruke sa servera
   if (data.msg) logEvent(data.msg);
+});
+
+socket.on("brgb_update", (data) => {
+  if (data.color) {
+    rgbData.color = rgbTupleToHex(data.color);
+    document.getElementById("rgb-preview").style.backgroundColor =
+      rgbData.color;
+    document.getElementById("rgb-color-picker").value = rgbData.color;
+    logEvent(`🔄 RGB boja ažurirana: ${rgbData.color}`);
+  }
+
+  if (data.is_on !== undefined) {
+    rgbData.power = data.is_on;
+    updateRGBStatus();
+    logEvent(`🔄 RGB status ažuriran: ${rgbData.power ? "ON" : "OFF"}`);
+  }
 });
 
 // ================================================================
@@ -191,27 +195,59 @@ function updateRGBPreview() {
   document.getElementById("rgb-preview").style.backgroundColor = color;
 }
 
+function hexToRgbTuple(hex) {
+  hex = hex.replace("#", "");
+
+  if (hex.length === 3) {
+    hex = hex
+      .split("")
+      .map((c) => c + c)
+      .join("");
+  }
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  return [r, g, b];
+}
+
+function rgbTupleToHex(rgb) {
+  if (!Array.isArray(rgb) || rgb.length !== 3) return "#000000"; // fallback
+
+  const [r, g, b] = rgb;
+
+  // pretvori svaki kanal u 2-znamenkasti hex
+  const hr = r.toString(16).padStart(2, "0");
+  const hg = g.toString(16).padStart(2, "0");
+  const hb = b.toString(16).padStart(2, "0");
+
+  return `#${hr}${hg}${hb}`.toUpperCase();
+}
+
 // Pošalji RGB komandu na server
 function sendRGBCommand(command) {
-  const color = document.getElementById("rgb-color-picker").value;
-  const payload = {
+  const colorHex = document.getElementById("rgb-color-picker").value;
+
+  let payload = {
     command: command,
-    color: color,
   };
+
+  if (command === "set") {
+    const [x, z, y] = hexToRgbTuple(colorHex); // konverzija
+
+    payload.color = [x, z, y]; // server dobija tuple
+    rgbData.color = colorHex; // UI zadržava HEX
+  }
 
   socket.emit("rgb_control", payload);
   logEvent(`💡 RGB komanda poslana: ${command.toUpperCase()}`);
 
   if (command === "on") {
     rgbData.power = true;
-    updateRGBStatus();
   } else if (command === "off") {
     rgbData.power = false;
-    updateRGBStatus();
-  } else if (command === "set") {
-    rgbData.color = color;
-    updateRGBStatus();
   }
+  updateRGBStatus();
 }
 
 // Ažuriraj status RGB sijalice u UI-u
@@ -326,8 +362,6 @@ function startTimer() {
     }
   }, 1000);
 }
-
-
 
 // Pošalji podatke štoperice serveru
 function sendTimerToServer() {
