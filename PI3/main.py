@@ -47,7 +47,7 @@ if __name__ == "__main__":
             actuator_registry.register('LCD', lcd_actuator)
         rgb_actuator = run_brgb(settings['BRGB'])
         if rgb_actuator:
-            actuator_registry.register('RGB', rgb_actuator)
+            actuator_registry.register('BRGB', rgb_actuator)
 
 
         console_thread = threading.Thread(target=console_loop, args=(actuator_registry, stop_event))

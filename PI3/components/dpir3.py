@@ -33,7 +33,7 @@ publisher_thread.start()
 
 def motion_detected_callback(publish_event, settings):
     global publish_data_counter, publish_data_limit
-    print(f"[DPIR3] motion detected - {time.strftime('%H:%M:%S', time.localtime())}")
+    print(f"[DPIR3] motion detected {time.strftime('%H:%M:%S', time.localtime())}")
 
     payload = {
         "measurement": "DPIR3",

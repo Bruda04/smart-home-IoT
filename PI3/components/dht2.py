@@ -33,6 +33,7 @@ publisher_thread.start()
 
 def dht2_read_callback(humidity, temperature, publish_event, settings):
     global publish_data_counter, publish_data_limit
+    print(f'[DHT2] Temperature: {temperature}°C, Humidity: {humidity}%')
 
     temp_payload = {
         "measurement": "DHT2-Temperature",

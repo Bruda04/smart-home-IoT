@@ -9,14 +9,12 @@
     "host": "localhost",
     "port": 1883,
     "topics": [
-      // PI1 components
       "DS1",
       "DUS1",
       "DB",
       "DL",
       "DPIR1",
       "DMS",
-      // PI2 components
       "BTN",
       "DHT3-Temperature",
       "DHT3-Humidity",
@@ -25,7 +23,6 @@
       "DUS2",
       "GSG",
       "SD",
-      // PI3 components
       "BRGB",
       "DHT1-Temperature",
       "DHT1-Humidity",

@@ -99,13 +99,13 @@ def save_event_to_db(event_type, reason):
 # 2 When a dpir sees movement, check the distances (a, b)
 def process_person_entering(name, val):
     sensor_map = {
-        "DPIR1": "last_dus1_values",
-        "DPIR2": "last_dus2_values",
+        "DPIR1": "last_DUS1_values",
+        "DPIR2": "last_DUS2_values",
     }
 
     dus_map = {
-        "DUS1": "last_dus1_values",
-        "DUS2": "last_dus2_values",
+        "DUS1": "last_DUS1_values",
+        "DUS2": "last_DUS2_values",
     }
 
     if name in sensor_map and val == True:
@@ -165,10 +165,8 @@ def lcd_rotation_task():
         current = sensors[saved_vals["current_dht_index"]]
         temp = saved_vals["dht"][current]["temp"]
         hum = saved_vals["dht"][current]["hum"]
-
         if temp is not None and hum is not None:
             text = f"{current}\nT:{temp:.1f}C H:{hum:.1f}%"
-
             mqtt_client.publish(
                 "commands/PI3/LCD",
                 json.dumps({
@@ -181,6 +179,7 @@ def lcd_rotation_task():
         saved_vals["current_dht_index"] = (saved_vals["current_dht_index"] + 1) % 3
 
         time.sleep(4)  
+
 
 def update_dht_values(name, val):
     sensor_name = name.split("-")[0]  # DHT1
@@ -318,7 +317,7 @@ def process_logic(data):
     if name == "GSG" and val == True:  trigger_alarm(f"{name}")
 
     #7 update temp and humidity
-    if name.startswith("DHT"): update_dht_values(name, val)
+    if name.startswith("DHT"): update_dht_values(data["measurement"], val)
 
     #8 stoperica TO DO 
     if name == "BTN" and val == True:

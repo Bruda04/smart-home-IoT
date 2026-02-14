@@ -18,7 +18,7 @@ def publisher_task(event, batch, hostname='localhost', port=1883):
             publish_data_counter = 0
             batch.clear()
         publish.multiple(local_batch, hostname=hostname, port=port)
-        print(f'[PUBLISH][IR] Data sent to MQTT')
+        print(f'[PUBLISH][IR] {publish_data_limit} values')
         event.clear()
 
 publish_event = threading.Event()

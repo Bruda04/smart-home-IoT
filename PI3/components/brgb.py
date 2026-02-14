@@ -32,20 +32,16 @@ publisher_thread.start()
 
 def brgb_callback(value, publish_event, settings):
     global publish_data_counter, publish_data_limit
-    is_on = value[3]
-    color = (value[0], value[1], value[2])
+    is_on = value[0]
+    color = (value[1], value[2], value[3])
     print(f"[BRGB] Color: {color}, On: {is_on}")
     payload = {
         "measurement": "BRGB",
         "simulated": settings['simulated'],
         "runs_on": settings["runs_on"],
         "name": settings["name"],
-        "value": {
-            "red": value[0],
-            "green": value[1],
-            "blue": value[2],
-            "is_on": value[3]
-        },
+        "value": is_on,
+        "color": color,
         "timestamp": time.time_ns()
     }
     with counter_lock:
@@ -56,9 +52,11 @@ def brgb_callback(value, publish_event, settings):
 
 
 def run_brgb(settings):
+        def brgb_callback_wrapper(value):
+            brgb_callback(value, publish_event, settings)
         if settings['simulated']:
             print("Starting RGB LED simulator")
-            simulator = RGB_LEDSimulator(brgb_callback)
+            simulator = RGB_LEDSimulator(brgb_callback_wrapper)
             print("RGB LED simulator started")
             return simulator
         else:
@@ -67,7 +65,7 @@ def run_brgb(settings):
                 settings['red_pin'],
                 settings['green_pin'],
                 settings['blue_pin'],
-                brgb_callback
+                brgb_callback_wrapper
             )
             return rgb_led
 

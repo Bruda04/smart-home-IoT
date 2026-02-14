@@ -3,7 +3,6 @@ class LCDSimulator:
         self.callback = callback
 
     def display(self, text):
-        print(f"LCD: {text}")
         self.callback(text)
     
     def clear(self):

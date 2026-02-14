@@ -1,4 +1,4 @@
-from time import time
+import time
 import paho.mqtt.client as mqtt
 import json
 
@@ -38,7 +38,6 @@ def start_listener(settings, actuator_registry, stop_event):
                     elif action == 'off':
                         actuator.off()
                     
-                print(f"[COMM][{actuator_name}] Command received for {actuator_name}: {payload}")
         except Exception as e:
             print(f"[COMM] Error processing command: {e}")
 

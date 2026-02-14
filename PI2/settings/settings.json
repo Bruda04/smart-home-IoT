@@ -27,7 +27,7 @@
   },
   "4SD": {
     "runs_on": "PI2",
-    "name": "4SD",
+    "name": "SD",
     "segments": [7, 8, 25, 23, 18, 4, 10, 11],
     "digits": [24, 17, 27, 22],
     "simulated": true,
