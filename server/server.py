@@ -297,4 +297,4 @@ if __name__ == '__main__':
     rotation_thread.start()
 
 
-    socketio.run(app, debug=True, port=5000, use_reloader=False)
+    socketio.run(app, debug=False, port=5000, use_reloader=False)

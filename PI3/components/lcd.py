@@ -1,7 +1,7 @@
 from simulators.lcd import LCDSimulator
 
 def lcd_callback(text):
-    pass
+    print(f"[LCD] {text}")
 
 def run_lcd(settings):
         if settings['simulated']:

@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # type: ignore
 from datetime import datetime
 import time
 

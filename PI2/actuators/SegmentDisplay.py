@@ -3,12 +3,13 @@ import time
 import threading
 
 class StopwatchDisplay:
-    def __init__(self, segments, digits, refresh_rate=0.002, add_delta_seconds=10):
+    def __init__(self, segments, digits, refresh_rate=0.002, add_delta_seconds=10, callback=None):
         self.segments = segments
         self.digits = digits
         self.refresh_rate = refresh_rate
         self.add_delta_seconds = add_delta_seconds
         self.current_value = "0000"
+        self.callback = callback
         self.running = True
         self.blinking = False
         self.lock = threading.Lock()
@@ -33,6 +34,8 @@ class StopwatchDisplay:
         }
 
         threading.Thread(target=self._display_loop, daemon=True).start()
+        self.last_reported_remaining = None
+
 
     def set_time(self, minutes, seconds):
         with self.lock:
@@ -64,9 +67,17 @@ class StopwatchDisplay:
                             minutes = remaining // 60
                             seconds = remaining % 60
                             self.current_value = f"{minutes:02}{seconds:02}"
+                            if remaining != self.last_reported_remaining:
+                                self.last_reported_remaining = remaining
+                                if self.callback:
+                                    self.callback(remaining)
                         else:
                             self.blinking = True
                             self.total_seconds = 0 
+                            if self.last_reported_remaining != 0:
+                                self.last_reported_remaining = 0
+                                if self.callback:
+                                    self.callback(0)
 
                     if self.blinking:
                         if int(time.time() * 2) % 2 == 0:

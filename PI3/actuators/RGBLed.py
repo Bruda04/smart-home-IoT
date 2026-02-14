@@ -1,10 +1,11 @@
 import RPi.GPIO as GPIO # type: ignore
 
 class RGB_LED:
-    def __init__(self, red_pin, green_pin, blue_pin):
+    def __init__(self, red_pin, green_pin, blue_pin, callback):
         self.red_pin = red_pin
         self.green_pin = green_pin
         self.blue_pin = blue_pin
+        self.callback = callback
         
         GPIO.setmode(GPIO.BCM)
         GPIO.setup([self.red_pin, self.green_pin, self.blue_pin], GPIO.OUT)
@@ -26,6 +27,7 @@ class RGB_LED:
             self.red_pwm.ChangeDutyCycle((r / 255) * 100)
             self.green_pwm.ChangeDutyCycle((g / 255) * 100)
             self.blue_pwm.ChangeDutyCycle((b / 255) * 100)
+        self.callback((self.is_on, r, g, b))
 
     def on(self):
         self.is_on = True
@@ -33,9 +35,11 @@ class RGB_LED:
             self.set_color(255, 255, 255)
         else:
             self.set_color(*self.current_color)
+        self.callback((self.is_on, self.current_color[0], self.current_color[1], self.current_color[2]))
 
     def off(self):
         self.is_on = False
         self.red_pwm.ChangeDutyCycle(0)
         self.green_pwm.ChangeDutyCycle(0)
         self.blue_pwm.ChangeDutyCycle(0)
+        self.callback((self.is_on, self.current_color[0], self.current_color[1], self.current_color[2]))

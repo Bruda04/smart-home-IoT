@@ -7,7 +7,7 @@ from simulators.dpir3 import run_dpir3_simulator
 
 dpir_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 1
 counter_lock = threading.Lock()
 
 def publisher_task(event, dpir_batch, hostname='localhost', port=1883):

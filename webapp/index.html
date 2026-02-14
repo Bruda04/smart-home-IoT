@@ -39,8 +39,12 @@
       <!-- ===== LEVA KOLONA / LEFT COLUMN ===== -->
       <div class="space-y-6">
         <!-- AKTUATORI - Svetla i Buzzer -->
-        <section class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-          <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <div
+            class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2"
+          >
             <h2 class="text-lg font-semibold">Aktuatori</h2>
             <select
               id="actuator-pi-selector"
@@ -54,33 +58,45 @@
           </div>
           <!-- PI1 Aktuatori -->
           <div id="pi1-actuator-display" class="space-y-4">
-            <div class="flex justify-between items-center bg-gray-700 p-3 rounded">
+            <div
+              class="flex justify-between items-center bg-gray-700 p-3 rounded"
+            >
               <span>Svetlo (DL)</span>
               <div id="status-dl" class="led-indicator"></div>
             </div>
-            <div class="flex justify-between items-center bg-gray-700 p-3 rounded">
+            <div
+              class="flex justify-between items-center bg-gray-700 p-3 rounded"
+            >
               <span>Buzzer (DB)</span>
               <div id="status-db" class="led-indicator"></div>
             </div>
           </div>
           <!-- PI2 Aktuatori -->
           <div id="pi2-actuator-display" class="hidden space-y-4">
-            <div class="flex justify-between items-center bg-gray-700 p-3 rounded">
+            <div
+              class="flex justify-between items-center bg-gray-700 p-3 rounded"
+            >
               <span>Svetlo (DL)</span>
               <div id="status-dl-pi2" class="led-indicator"></div>
             </div>
-            <div class="flex justify-between items-center bg-gray-700 p-3 rounded">
+            <div
+              class="flex justify-between items-center bg-gray-700 p-3 rounded"
+            >
               <span>Buzzer (DB)</span>
               <div id="status-db-pi2" class="led-indicator"></div>
             </div>
           </div>
           <!-- PI3 Aktuatori -->
           <div id="pi3-actuator-display" class="hidden space-y-4">
-            <div class="flex justify-between items-center bg-gray-700 p-3 rounded">
+            <div
+              class="flex justify-between items-center bg-gray-700 p-3 rounded"
+            >
               <span>Svetlo (DL)</span>
               <div id="status-dl-pi3" class="led-indicator"></div>
             </div>
-            <div class="flex justify-between items-center bg-gray-700 p-3 rounded">
+            <div
+              class="flex justify-between items-center bg-gray-700 p-3 rounded"
+            >
               <span>Buzzer (DB)</span>
               <div id="status-db-pi3" class="led-indicator"></div>
             </div>
@@ -88,27 +104,50 @@
         </section>
 
         <!-- LOGIKA ULAZA - Broj osoba i status sistema -->
-        <section class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Logika Ulaza</h2>
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+            Logika Ulaza
+          </h2>
           <div class="grid grid-cols-2 gap-4">
             <div class="bg-gray-700 p-3 rounded text-center">
               <p class="text-xs text-gray-400 uppercase">Osoba u objektu</p>
-              <p id="people-count" class="text-3xl font-mono text-blue-400">0</p>
+              <p id="people-count" class="text-3xl font-mono text-blue-400">
+                0
+              </p>
             </div>
             <div class="bg-gray-700 p-3 rounded text-center">
               <p class="text-xs text-gray-400 uppercase">Sistem</p>
-              <p id="security-status" class="text-sm font-bold text-green-400 uppercase">Deaktiviran</p>
+              <p
+                id="security-status"
+                class="text-sm font-bold text-green-400 uppercase"
+              >
+                Deaktiviran
+              </p>
             </div>
           </div>
         </section>
 
         <!-- ALARM - Status alarma sa dugmetom za gašenje -->
-        <section class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Alarm</h2>
-          <div id="alarm-status-section" class="bg-gray-700 p-4 rounded flex justify-between items-center">
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+            Alarm
+          </h2>
+          <div
+            id="alarm-status-section"
+            class="bg-gray-700 p-4 rounded flex justify-between items-center"
+          >
             <div>
               <p class="text-sm text-gray-400 uppercase mb-2">Status Alarma</p>
-              <p id="alarm-status-text" class="text-2xl font-bold text-gray-400">Alarm OFF</p>
+              <p
+                id="alarm-status-text"
+                class="text-2xl font-bold text-gray-400"
+              >
+                Alarm OFF
+              </p>
             </div>
             <button
               id="alarm-toggle-btn"
@@ -121,8 +160,12 @@
         </section>
 
         <!-- RGB SIJALICA - Kontrola boje i uključivanja/isključivanja -->
-        <section class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">💡 RGB Sijalica</h2>
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+            💡 RGB Sijalica
+          </h2>
           <div class="space-y-3">
             <!-- RGB Sijalica Prikaz Boje -->
             <div class="flex items-center gap-3">
@@ -131,7 +174,9 @@
                 class="w-16 h-16 rounded-full border-2 border-gray-600 bg-red-500 transition-all"
               ></div>
               <div class="flex-1">
-                <p class="text-xs text-gray-400 uppercase mb-2">Odabrana boja</p>
+                <p class="text-xs text-gray-400 uppercase mb-2">
+                  Odabrana boja
+                </p>
                 <input
                   id="rgb-color-picker"
                   type="color"
@@ -163,7 +208,9 @@
             >
               📤 Pošalji Boju
             </button>
-            <p id="rgb-status" class="text-xs text-gray-400 mt-2 text-center">Status: Isključeno</p>
+            <p id="rgb-status" class="text-xs text-gray-400 mt-2 text-center">
+              Status: Isključeno
+            </p>
           </div>
         </section>
       </div>
@@ -171,15 +218,26 @@
       <!-- ===== SREDNJA KOLONA / MIDDLE COLUMN ===== -->
       <div class="space-y-6">
         <!-- KUHINJSKA ŠTOPERICA - Tajmer sa povratnom vezom na server -->
-        <section class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">🕐 Kuhinjska Štoperica</h2>
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+            🕐 Kuhinjska Štoperica
+          </h2>
 
           <!-- 4-Segment Display Prikaz vremena -->
           <div class="bg-black p-4 rounded mb-4 text-center font-mono">
-            <div id="timer-display" class="text-5xl text-green-400 font-bold tracking-widest" style="font-family: 'Courier New', monospace;">
+            <div
+              id="timer-display"
+              class="text-5xl text-green-400 font-bold tracking-widest"
+              style="font-family: &quot;Courier New&quot;, monospace"
+            >
               00:00
             </div>
-            <div id="timer-blink" class="hidden animate-pulse text-red-500 text-2xl mt-2">
+            <div
+              id="timer-blink"
+              class="hidden animate-pulse text-red-500 text-2xl mt-2"
+            >
               ⚠️ VRIJEME ISTEKLO!
             </div>
           </div>
@@ -187,7 +245,9 @@
           <!-- Konfiguracija - Postavljanje vremena -->
           <div class="space-y-3 mb-4">
             <div>
-              <label class="text-xs text-gray-400 uppercase block mb-1">Postavi vreme (MM:SS)</label>
+              <label class="text-xs text-gray-400 uppercase block mb-1"
+                >Postavi vreme (MM:SS)</label
+              >
               <input
                 id="timer-input"
                 type="text"
@@ -198,7 +258,9 @@
             </div>
 
             <div>
-              <label class="text-xs text-gray-400 uppercase block mb-1">Dodaj N sekundi</label>
+              <label class="text-xs text-gray-400 uppercase block mb-1"
+                >Dodaj N sekundi</label
+              >
               <input
                 id="timer-increment"
                 type="number"
@@ -212,9 +274,7 @@
 
           <!-- Kontrole - Pokreni, Dodaj, Pošalji -->
           <div class="space-y-2">
-            <div class="grid grid-cols-2 gap-2">
-
-            </div>
+            <div class="grid grid-cols-2 gap-2"></div>
 
             <!-- Dugme za slanje na server -->
             <button
@@ -225,15 +285,17 @@
             </button>
           </div>
         </section>
-
-
       </div>
 
       <!-- ===== DESNA KOLONA / RIGHT COLUMN ===== -->
       <div class="space-y-6">
         <!-- PI1 PREZENTACIJA - Demo scenariji -->
-        <section class="bg-blue-900/20 border border-blue-500/50 p-4 rounded-xl shadow-lg">
-          <h2 class="text-lg font-semibold mb-2 text-blue-400">🚀 PI1 Prezentacija</h2>
+        <section
+          class="bg-blue-900/20 border border-blue-500/50 p-4 rounded-xl shadow-lg"
+        >
+          <h2 class="text-lg font-semibold mb-2 text-blue-400">
+            🚀 PI1 Prezentacija
+          </h2>
           <div class="space-y-2">
             <button
               onclick="triggerScenario('entry')"
@@ -257,9 +319,16 @@
         </section>
 
         <!-- WEB KAMERA - Prikazivanje video streama -->
-        <section class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700">
-          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">📹 Web Kamera</h2>
-          <div class="bg-black rounded overflow-hidden" style="aspect-ratio: 16/9;">
+        <section
+          class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
+        >
+          <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+            📹 Web Kamera
+          </h2>
+          <div
+            class="bg-black rounded overflow-hidden"
+            style="aspect-ratio: 16/9"
+          >
             <img
               id="webcam-stream"
               src="http://localhost:8081"
@@ -268,18 +337,24 @@
               onerror="handleWebcamError()"
             />
           </div>
-          <p id="webcam-status" class="text-xs text-gray-400 mt-2 text-center">Učitavanje streama...</p>
+          <p id="webcam-status" class="text-xs text-gray-400 mt-2 text-center">
+            Učitavanje streama...
+          </p>
         </section>
       </div>
     </main>
 
     <!-- ===== GRAFANA LIVE DASHBOARD ===== -->
-    <section class="p-6 bg-gray-800 m-6 rounded-xl shadow-lg border border-gray-700">
-      <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">📊 Grafana Live Dashboard</h2>
-      <iframe 
-        src="http://localhost:3000/public-dashboards/31109d01da9648ab85dfd32347206fe1" 
+    <section
+      class="p-6 bg-gray-800 m-6 rounded-xl shadow-lg border border-gray-700"
+    >
+      <h2 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">
+        📊 Grafana Live Dashboard
+      </h2>
+      <iframe
+        src="http://localhost:3000/public-dashboards/890121d617424fe5887566cfa1e6574b"
         class="w-full rounded"
-        style="height: 1500px; border: none;"
+        style="height: 1500px; border: none"
         frameborder="0"
       ></iframe>
     </section>
