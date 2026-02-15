@@ -389,6 +389,11 @@ def handle_connect():
     # send current system state when a client connects
     try:
         socketio.emit('state_update', state)
+        # also send current stopwatch time so frontends show it immediately
+        try:
+            socketio.emit('sw_time_update', {"time": saved_vals.get("sw_time", "0000")})
+        except Exception:
+            pass
     except Exception:
         pass
 
@@ -416,10 +421,12 @@ def sw(data):
     action = data.get("command")
     if action == "set_add_seconds":
         n = data.get("delta")
+        print(f"[SW] Received set_add_seconds -> delta={n}")
         set_add_seconds(n)
     elif action == "set_time":
         minutes = data.get("minutes")
         seconds = data.get("seconds")
+        print(f"[SW] Received set_time -> minutes={minutes}, seconds={seconds}")
         set_sw_time(minutes, seconds)
 
 @socketio.on('trigger_scenario')

@@ -42,6 +42,36 @@ socket.on("connect", () => {
   logEvent("✅ Veza sa serverom uspostavljena.");
 });
 
+// Događaj: Primanje ažuriranja štoperice sa servera (svaki sekund)
+socket.on('sw_time_update', (data) => {
+  const raw = data.time;
+
+  // If server sends '0000' style string, convert to '00:00'
+  if (typeof raw === 'string' && /^\d{4}$/.test(raw)) {
+    const formatted = raw.slice(0,2) + ':' + raw.slice(2,4);
+    displayServerTimeFromString(formatted);
+    return;
+  }
+
+  // If server sends 'MM:SS' already
+  if (typeof raw === 'string' && raw.includes(':')) {
+    displayServerTimeFromString(raw);
+    return;
+  }
+
+  // If server sends seconds as number
+  if (typeof raw === 'number') {
+    displayServerTime(raw);
+    return;
+  }
+
+  // Fallback: try to parse as integer seconds
+  const asInt = parseInt(raw, 10);
+  if (!isNaN(asInt)) {
+    displayServerTime(asInt);
+  }
+});
+
 // Događaj: Primanje ažuriranja stanja iz servera
 socket.on("state_update", (data) => {
   // Odredi koji PI je poslao podatke (podrazumevano PI1)
@@ -301,6 +331,37 @@ function updateTimerDisplay() {
   display.innerText = formatTime(timerSeconds);
 }
 
+// Prikaži vreme dobijeno sa servera (ne oslanjamo se na lokalni interval)
+function displayServerTime(totalSeconds) {
+  const display = document.getElementById("timer-display");
+  const blinkDiv = document.getElementById("timer-blink");
+  const status = document.getElementById("timer-status");
+
+  display.innerText = formatTime(totalSeconds);
+  if (totalSeconds > 0) {
+    blinkDiv.classList.add("hidden");
+    status.innerText = "Status: ▶ POKRENUT";
+  } else {
+    blinkDiv.classList.remove("hidden");
+    status.innerText = "Status: ⏰ VRIJEME ISTEKLO!";
+  }
+}
+
+function displayServerTimeFromString(formatted) {
+  const display = document.getElementById("timer-display");
+  const blinkDiv = document.getElementById("timer-blink");
+  const status = document.getElementById("timer-status");
+
+  display.innerText = formatted;
+  if (formatted === "00:00" || formatted === "0:00") {
+    blinkDiv.classList.remove("hidden");
+    status.innerText = "Status: ⏰ VRIJEME ISTEKLO!";
+  } else {
+    blinkDiv.classList.add("hidden");
+    status.innerText = "Status: ▶ POKRENUT";
+  }
+}
+
 // Pokreni brojanje vremena unazad
 function startTimer() {
   if (isRunning) return;
@@ -327,21 +388,29 @@ function startTimer() {
   }, 1000);
 }
 
-
-
-// Pošalji podatke štoperice serveru
-function sendTimerToServer() {
-  if (timerSeconds > 0) {
-    const payload = {
-      time_remaining: timerSeconds,
-      formatted_time: formatTime(timerSeconds),
-      is_running: isRunning,
-    };
-    socket.emit("timer_update", payload);
-    logEvent(`📤 Štoperica poslana serveru: ${formatTime(timerSeconds)}`);
-  } else {
-    alert("Postavite vreme pre nego što pošaljete na server!");
+// Pošalji komandu serveru da postavi vreme (MM:SS)
+function sendSetTimeToServer() {
+  const input = document.getElementById("timer-input").value;
+  const parts = input.split(":");
+  if (parts.length !== 2) {
+    alert("Molimo unesite vreme u formatu MM:SS");
+    return;
   }
+  const minutes = parseInt(parts[0], 10) || 0;
+  const seconds = parseInt(parts[1], 10) || 0;
+  socket.emit("sw_command", { command: "set_time", minutes: minutes, seconds: seconds });
+  logEvent(`📤 Poslat zahtev za postavljanje vremena: ${minutes}:${String(seconds).padStart(2, '0')}`);
+}
+
+// Pošalji komandu serveru da postavi interval (delta sekundi)
+function sendIntervalToServer() {
+  const n = parseInt(document.getElementById("interval-input").value, 10);
+  if (!n || n <= 0) {
+    alert("Unesite validan broj sekundi za interval");
+    return;
+  }
+  socket.emit("sw_command", { command: "set_add_seconds", delta: n });
+  logEvent(`📤 Poslat zahtev za definisanje intervala: ${n} sekundi`);
 }
 
 // ================================================================
