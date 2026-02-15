@@ -147,8 +147,6 @@
             </button>
           </div>
         </section>
-
-
       </div>
 
       <!-- ===== SREDNJA KOLONA / MIDDLE COLUMN ===== -->
@@ -219,7 +217,7 @@
           </div>
         </section>
 
-                <!-- RGB SIJALICA - Kontrola boje i uključivanja/isključivanja -->
+        <!-- RGB SIJALICA - Kontrola boje i uključivanja/isključivanja -->
         <section
           class="bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-700"
         >
@@ -287,7 +285,7 @@
           <div class="space-y-2">
             <button
               onclick="triggerScenario('dpir1_detects')"
-              class="w-full text-left  bg-gray-700 hover:bg-blue-500 p-3 rounded text-sm font-semibold transition"
+              class="w-full text-left bg-gray-700 hover:bg-blue-500 p-3 rounded text-sm font-semibold transition"
             >
               1. Simuliraj DPIR1 detekciju (ukluci DL na 10s)
             </button>
@@ -300,11 +298,10 @@
 
             <button
               onclick="triggerScenario('ds12_detected')"
-              class="w-full text-left  bg-gray-700 hover:bg-blue-500 p-3 rounded text-sm font-semibold transition"
+              class="w-full text-left bg-gray-700 hover:bg-blue-500 p-3 rounded text-sm font-semibold transition"
             >
               4.b. Detektovano na DS1/2 imas 20s za pin
             </button>
-
 
             <button
               onclick="triggerScenario('empty_house_movement')"
@@ -313,17 +310,12 @@
               5. U praznom objektu se detektuje pokret DPIRs
             </button>
 
-
             <button
               onclick="triggerScenario('alarm_on')"
               class="w-full text-left bg-gray-700 hover:bg-blue-500 p-3 rounded text-sm font-semibold transition"
             >
               6. Simuliraj GSG - Alarm on
             </button>
-
-
-
-
           </div>
         </section>
 
@@ -340,7 +332,6 @@
           >
             <img
               id="webcam-stream"
-              src="http://localhost:8081"
               alt="Web kamera stream"
               class="w-full h-full object-cover"
               onerror="handleWebcamError()"
@@ -358,7 +349,7 @@
       class="p-6 bg-gray-800 m-6 rounded-xl shadow-lg border border-gray-700"
     >
       <iframe
-        src="http://localhost:3000/public-dashboards/31109d01da9648ab85dfd32347206fe1"
+        id="grafana-iframe"
         class="w-full rounded"
         style="height: 1500px; border: none"
         frameborder="0"
