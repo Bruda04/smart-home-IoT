@@ -205,7 +205,7 @@ def check_pin():
 #8 Stoperica
 def extend_sw():
     mqtt_client.publish(
-        "commands/PI2/4SD",
+        "commands/PI2/SD",
         json.dumps({
             "action": "add_seconds"
         })

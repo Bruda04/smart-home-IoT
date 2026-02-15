@@ -47,7 +47,7 @@ if __name__ == "__main__":
         actuator_registry = ActuatorRegistry()
         sw_actuator = run_sd(settings['4SD'])
         if sw_actuator:
-            actuator_registry.register('4SD', sw_actuator)
+            actuator_registry.register('SD', sw_actuator)
 
 
         console_thread = threading.Thread(target=console_loop, args=(actuator_registry, stop_event))

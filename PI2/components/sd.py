@@ -32,7 +32,6 @@ publisher_thread.start()
 
 def sd_callback(value, publish_event, settings):
     global publish_data_counter, publish_data_limit
-    print(f"[SD] {value}")
     payload = {
         "measurement": "SD",
         "simulated": settings['simulated'],
@@ -44,7 +43,7 @@ def sd_callback(value, publish_event, settings):
     with counter_lock:
         sd_batch.append(('SD', json.dumps(payload), 0, True))
         publish_data_counter += 1
-    if publish_data_counter >= publish_data_limit:
+    if publish_data_counter >= publish_data_limit or value == 0:
         publish_event.set()
 
 
