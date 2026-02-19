@@ -1,14 +1,11 @@
 {
-  "MQTT": {
-    "hostname": "localhost",
-    "port": 1883
-  },
   "DS1": {
     "runs_on": "PI1",
     "name": "DS1",
     "pin": 17,
     "simulated": true,
-    "bouncetime": 100
+    "bouncetime": 150,
+    "pull_up": true
   },
   "DB": {
     "runs_on": "PI1",

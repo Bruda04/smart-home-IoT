@@ -1,4 +1,4 @@
-import MPU6050
+from sensors import MPU6050
 import time
 import math
 
@@ -9,9 +9,11 @@ class Gyroscope:
                  accel_threshold_g=0.3,
                  gyro_threshold_dps=50,
                  cooldown_time_s=2):
-
-        self.mpu = MPU6050.MPU6050()
-        self.mpu.dmp_initialize()
+        try:
+            self.mpu = MPU6050.MPU6050()
+            self.mpu.dmp_initialize()
+        except Exception as e:
+            print(f"MPU6050 initialization error: {e}")
 
         self.accel_threshold = accel_threshold_g
         self.gyro_threshold = gyro_threshold_dps

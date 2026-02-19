@@ -1,8 +1,4 @@
 {
-  "MQTT": {
-    "hostname": "localhost",
-    "port": 1883
-  },
   "DHT1": {
     "runs_on": "PI3",
     "name": "DHT1",
@@ -26,7 +22,9 @@
   "BRGB": {
     "runs_on": "PI3",
     "name": "BRGB",
-    "pin": [12, 13, 19],
+    "red_pin": 12,
+    "green_pin": 13,
+    "blue_pin": 19,
     "simulated": true
   },
   "LCD": {

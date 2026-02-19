@@ -59,10 +59,12 @@ def run_btn(settings, threads, stop_event):
             print("BTN simulator started")
         else:
             from sensors.Button import Button
+            from RPi import GPIO # type: ignore
             def button_pressed_callback_wrapper(event=None):
                 button_pressed_callback(publish_event, settings)
             btn = Button(pin = settings['pin'],
                           pull_up = settings.get('pull_up', True),
+                          edge=GPIO.FALLING,
                           bouncetime = settings.get('bouncetime', 100),
                           callback = button_pressed_callback_wrapper)
             

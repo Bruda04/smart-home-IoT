@@ -1,14 +1,11 @@
 {
-  "MQTT": {
-    "hostname": "localhost",
-    "port": 1883
-  },
   "DS2": {
     "runs_on": "PI2",
     "name": "DS2",
     "pin": 5,
     "simulated": true,
-    "bouncetime": 100
+    "pull_up": true,
+    "bouncetime": 150
   },
   "DUS2": {
     "runs_on": "PI2",

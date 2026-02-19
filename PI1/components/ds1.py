@@ -61,9 +61,11 @@ def run_ds1(settings, threads, stop_event):
             print("DS1 simulator started")
         else:
             from sensors.Button import Button
+            from RPi import GPIO # type: ignore
             
             ds1 = Button(pin = settings['pin'],
-                          pull_up = None,
+                          pull_up = settings.get('pull_up', True),
+                          edge = GPIO.BOTH,
                           bouncetime = settings.get('bouncetime', 100),
                           callback = button_pressed_callback_wrapper,
                           )

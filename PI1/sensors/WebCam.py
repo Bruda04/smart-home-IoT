@@ -1,3 +1,4 @@
+import time
 import os
 
 class WebCam:
@@ -13,7 +14,7 @@ class WebCam:
         print(f'WEBC stream available at: {self.link}')
 
         while not self.stop_event.is_set():
-            pass
+            time.sleep(1)
 
         self._stop_stream()
 

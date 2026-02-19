@@ -1,4 +1,4 @@
-from MPU6050 import MPU6050
+from sensors.MPU6050 import MPU6050
 from SimplePID import SimplePID # type: ignore
 
 

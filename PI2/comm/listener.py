@@ -1,10 +1,11 @@
 import time
 import paho.mqtt.client as mqtt
 import json
+import settings.broker_settings as broker_settings
 
-def start_listener(settings, actuator_registry, stop_event):
-    hostname = settings.get('hostname', 'localhost')
-    port = settings.get('port', 1883)
+def start_listener(actuator_registry, stop_event):
+    hostname = broker_settings.HOSTNAME
+    port = broker_settings.PORT
     
     client = mqtt.Client()
 

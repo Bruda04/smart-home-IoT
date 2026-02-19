@@ -55,7 +55,7 @@ if __name__ == "__main__":
         console_thread.start()
         threads.append(console_thread)
         
-        listener_thread = threading.Thread(target=start_listener, args=(settings['MQTT'], actuator_registry, stop_event))
+        listener_thread = threading.Thread(target=start_listener, args=(actuator_registry, stop_event))
         listener_thread.daemon = False
         listener_thread.start()
         threads.append(listener_thread)

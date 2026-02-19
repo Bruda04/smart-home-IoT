@@ -80,7 +80,6 @@ def run_dht1(settings, threads, stop_event):
                     check = dht.readDHT11()
                     code = parseCheckCode(check)
                     if code != "DHTLIB_OK":
-                        print(f'[DHT1] Read error: {code}')
                         continue
                     humidity, temperature = dht.humidity, dht.temperature
                     callback(humidity, temperature, publish_event, settings)
