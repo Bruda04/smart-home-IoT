@@ -65,7 +65,7 @@ def run_dms(settings, threads, stop_event):
         print("Starting DMS (keypad) simulator")
         kp_thread = threading.Thread(
             target=run_dms_simulator,
-            args=(settings.get('poll_delay', 0.2), callback_wrapper, stop_event, publish_event, settings)
+            args=(5, callback_wrapper, stop_event, publish_event, settings)
         )
         kp_thread.start()
         threads.append(kp_thread)

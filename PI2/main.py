@@ -68,8 +68,9 @@ if __name__ == "__main__":
         stop_event.set()
     
     finally:
+        stop_event.set()
         for t in threads:
-            stop_event.set()
+            t.join()
                 
         cleanup_gpio()
         
