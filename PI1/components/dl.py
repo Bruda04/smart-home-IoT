@@ -7,7 +7,7 @@ import settings.broker_settings as broker_settings
 
 dl_batch = []
 publish_data_counter = 0
-publish_data_limit = 2
+publish_data_limit = 1
 counter_lock = threading.Lock()
 
 def publisher_task(event, dl_batch, hostname='localhost', port=1883):

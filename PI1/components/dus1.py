@@ -7,7 +7,7 @@ import settings.broker_settings as broker_settings
 
 dus1_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 3
 counter_lock = threading.Lock()
 
 def publisher_task(event, dus1_batch, hostname='localhost', port=1883):
@@ -67,7 +67,7 @@ def run_dus1(settings, threads, stop_event):
                     distance = dus1_sensor.get_distance()
                     if distance is not None:
                         distance_callback(distance, publish_event, settings)
-                    time.sleep(1)
+                    time.sleep(settings.get('poll_delay', 1))
 
             sensor_thread = threading.Thread(target=sensor_loop)
             sensor_thread.start()

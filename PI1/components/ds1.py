@@ -8,7 +8,7 @@ import settings.broker_settings as broker_settings
 
 ds1_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 1
 counter_lock = threading.Lock()
 
 def publisher_task(event, ds1_batch, hostname='localhost', port=1883):
@@ -29,16 +29,16 @@ publisher_thread = threading.Thread(target=publisher_task, args=(publish_event, 
 publisher_thread.daemon = True
 publisher_thread.start()
 
-def button_pressed_callback(publish_event, settings):
+def button_pressed_callback(pressed, publish_event, settings):
     global publish_data_counter, publish_data_limit
-    print(f"[DS1] pressed - {time.strftime('%H:%M:%S', time.localtime())}")
+    print(f"[DS1] {('PRESSED' if pressed else 'RELEASED')} - {time.strftime('%H:%M:%S', time.localtime())}")
 
     ds1_payload = {
         "measurement": "DS1",
         "simulated": settings['simulated'],
         "runs_on": settings["runs_on"],
         "name": settings["name"],
-        "value": True,
+        "value": pressed,
         "timestamp": time.time_ns()
     }
 
@@ -51,17 +51,22 @@ def button_pressed_callback(publish_event, settings):
 
 
 def run_ds1(settings, threads, stop_event):
+        def button_pressed_callback_wrapper(pressed):
+                button_pressed_callback(pressed, publish_event, settings)
         if settings['simulated']:
             print("Starting DS1 simulator")
-            ds1_thread = threading.Thread(target = run_ds1_simulator, args=(2, button_pressed_callback, stop_event, publish_event, settings))
+            ds1_thread = threading.Thread(target = run_ds1_simulator, args=(2, button_pressed_callback_wrapper, stop_event))
             ds1_thread.start()
             threads.append(ds1_thread)
             print("DS1 simulator started")
         else:
             from sensors.Button import Button
-            def button_pressed_callback_wrapper():
-                button_pressed_callback(publish_event, settings)
+            from RPi import GPIO # type: ignore
+            
             ds1 = Button(pin = settings['pin'],
                           pull_up = settings.get('pull_up', True),
+                          edge = GPIO.BOTH,
                           bouncetime = settings.get('bouncetime', 100),
-                          callback = button_pressed_callback_wrapper)
+                          callback = button_pressed_callback_wrapper,
+                          )
+            
