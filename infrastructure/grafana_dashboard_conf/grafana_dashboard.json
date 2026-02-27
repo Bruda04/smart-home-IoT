@@ -18,6 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 0,
   "links": [],
   "panels": [
     {
@@ -36,40 +37,39 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "afbqrt5eavldsc"
+        "uid": "bfd8rsmo0uznka"
       },
-      "description": "Front Door Keypad",
+      "description": "Front door buzzer - Current state - last known value",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
-          "custom": {
-            "align": "center",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "footer": {
-              "reducers": []
-            },
-            "inspect": false,
-            "minWidth": 50,
-            "wrapText": true
-          },
-          "decimals": 0,
-          "fieldMinMax": false,
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "🔇"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "🔊"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "max": 1,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -78,108 +78,44 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 6,
         "x": 0,
         "y": 1
       },
-      "id": 6,
+      "id": 3,
       "options": {
-        "cellHeight": "sm",
-        "showHeader": false
-      },
-      "pluginVersion": "12.3.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "afbqrt5eavldsc"
-          },
-          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DMS\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      key: if exists r._value then string(v: r._value) else \"\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"key\"])\r\n",
-          "refId": "A"
-        }
-      ],
-      "title": "DMS",
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "dfb107mz27toga"
-      },
-      "description": "Front Door Button",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "footer": {
-              "reducers": []
-            },
-            "inspect": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "/^value_num$/",
+          "values": false
         },
-        "overrides": []
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 1
-      },
-      "id": 1,
-      "options": {
-        "cellHeight": "sm",
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "12.3.2",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "dfb107mz27toga"
+            "uid": "bfd8rsmo0uznka"
           },
-          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      state: if r._value then \"PRESSED\" else \"RELEASED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n",
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DB\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if r._value then 1 else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
           "refId": "A"
         }
       ],
-      "title": "DS1",
-      "transformations": [
-        {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
-              {
-                "desc": true,
-                "field": "_time"
-              }
-            ]
-          }
-        }
-      ],
-      "type": "table"
+      "title": "DB",
+      "type": "stat"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "afbqrt5eavldsc"
+        "uid": "bfd8rsmo0uznka"
       },
       "description": "Front Door Buzzer",
       "fieldConfig": {
@@ -261,9 +197,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 9
+        "w": 6,
+        "x": 6,
+        "y": 1
       },
       "id": 8,
       "options": {
@@ -279,12 +215,12 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.2",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "afbqrt5eavldsc"
+            "uid": "bfd8rsmo0uznka"
           },
           "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DB\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then (if r._value then 1 else -1) else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
           "refId": "A"
@@ -296,9 +232,9 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "afbqrt5eavldsc"
+        "uid": "bfd8rsmo0uznka"
       },
-      "description": "Front door buzzer - Current state - last known value",
+      "description": "Front Door Light - Current state - last known value",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -308,21 +244,19 @@
             {
               "options": {
                 "0": {
-                  "color": "red",
-                  "index": 1,
-                  "text": "🔇"
+                  "color": "dark-red",
+                  "index": 0,
+                  "text": "⚫️"
                 },
                 "1": {
                   "color": "green",
-                  "index": 0,
-                  "text": "🔊"
+                  "index": 1,
+                  "text": "💡"
                 }
               },
               "type": "value"
             }
           ],
-          "max": 1,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -341,46 +275,44 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 6,
         "x": 12,
-        "y": 9
+        "y": 1
       },
-      "id": 3,
+      "id": 4,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^value_num$/",
+          "calcs": ["lastNotNull"],
+          "fields": "",
           "values": false
         },
         "showPercentChange": false,
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.2",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "afbqrt5eavldsc"
+            "uid": "bfd8rsmo0uznka"
           },
-          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DB\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if r._value then 1 else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DL\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if r._value then 1 else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
           "refId": "A"
         }
       ],
-      "title": "DB",
+      "title": "DL",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "afbqrt5eavldsc"
+        "uid": "bfd8rsmo0uznka"
       },
       "description": "Front Door Light",
       "fieldConfig": {
@@ -462,9 +394,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 17
+        "w": 6,
+        "x": 18,
+        "y": 1
       },
       "id": 5,
       "options": {
@@ -480,12 +412,12 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.2",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "afbqrt5eavldsc"
+            "uid": "bfd8rsmo0uznka"
           },
           "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DL\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then (if r._value then 1 else -1) else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
           "refId": "A"
@@ -497,31 +429,30 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "afbqrt5eavldsc"
+        "uid": "bfd8rsmo0uznka"
       },
-      "description": "Front Door Light - Current state - last known value",
+      "description": "Front Door Keypad",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "color": "dark-red",
-                  "index": 0,
-                  "text": "⚫️"
-                },
-                "1": {
-                  "color": "green",
-                  "index": 1,
-                  "text": "💡"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 50,
+            "wrapText": true
+          },
+          "decimals": 0,
+          "fieldMinMax": false,
+          "mappings": [],
+          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -540,46 +471,211 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 17
+        "w": 6,
+        "x": 0,
+        "y": 9
       },
-      "id": 4,
+      "id": 6,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
+        "cellHeight": "sm",
+        "showHeader": true
       },
-      "pluginVersion": "12.3.2",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "afbqrt5eavldsc"
+            "uid": "bfd8rsmo0uznka"
           },
-          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DL\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if r._value then 1 else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DMS\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      key: if exists r._value then string(v: r._value) else \"\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"key\"])\r\n",
           "refId": "A"
         }
       ],
-      "title": "DL - Door Light",
-      "type": "stat"
+      "title": "DMS",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "key": "Key"
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "afbqrt5eavldsc"
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Front Door Button",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 9
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      state: if r._value == true then \"PRESSED\" else \"RELEASED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DS1",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "_time"
+              }
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "state": "State"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Front Door Motion Sensor",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 9
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DPIR1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      state: \"DETECTED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DPIR1",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "state": "State"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
       },
       "description": "Front Door Ultrasonic Sensor",
       "fieldConfig": {
@@ -647,9 +743,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 25
+        "w": 6,
+        "x": 18,
+        "y": 9
       },
       "id": 2,
       "options": {
@@ -665,26 +761,39 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.2",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "afbqrt5eavldsc"
+            "uid": "bfd8rsmo0uznka"
           },
           "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DUS1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
           "refId": "A"
         }
       ],
-      "title": "PI1 - DUS1",
+      "title": "DUS1",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 11,
+      "panels": [],
+      "title": "PI2",
+      "type": "row"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "afbqrt5eavldsc"
+        "uid": "bfd8rsmo0uznka"
       },
-      "description": "Front Door Motion Sensor",
+      "description": "Garage Door Ultrasonic Sensor",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -696,12 +805,10 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "axisSoftMax": 1,
-            "axisSoftMin": 0,
             "barAlignment": 0,
-            "barWidthFactor": 0.7,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -710,10 +817,114 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 400,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
+              }
+            ]
+          },
+          "unit": "cm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 18
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DUS2\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DUS2",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Kitchen temperature",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
             },
             "showPoints": "auto",
             "showValues": false,
@@ -725,6 +936,184 @@
             "thresholdsStyle": {
               "mode": "off"
             }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 18
+      },
+      "id": 20,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DHT3-Temperature\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DHT3 - Temperature",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Kitchen humidity",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 18
+      },
+      "id": 21,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DHT3-Humidity\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DHT3 - Humidity",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Garage Door Button",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -745,11 +1134,408 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 25
+        "w": 6,
+        "x": 0,
+        "y": 26
       },
-      "id": 9,
+      "id": 15,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DS2\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      state: if r._value == true then \"PRESSED\" else \"RELEASED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DS2",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "_time"
+              }
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "state": "State"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Garage Door Motion Sensor",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 26
+      },
+      "id": 17,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DPIR2\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      state: \"DETECTED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DPIR2",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "state": "State"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "SW BTN",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 26
+      },
+      "id": 13,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"BTN\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      state: if r._value == true then \"PRESSED\" else \"RELEASED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "BTN",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "_time"
+              }
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "state": "State"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Gyroscope in kitchen",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 26
+      },
+      "id": 18,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Time"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"GSG\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      state: \"MOVED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "GSG",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "state": "Event"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
+      "id": 12,
+      "panels": [],
+      "title": "PI3",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Kitchen temperature",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 35
+      },
+      "id": 22,
       "options": {
         "legend": {
           "calcs": [],
@@ -763,22 +1549,812 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.2",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "afbqrt5eavldsc"
+            "uid": "bfd8rsmo0uznka"
           },
-          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DPIR1\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DHT1-Temperature\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
           "refId": "A"
         }
       ],
-      "title": "PI1 - DPIR1",
+      "title": "DHT1 - Temperature",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Kitchen humidity",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 35
+      },
+      "id": 23,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DHT1-Humidity\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DHT1 - Humidity",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Kitchen temperature",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 35
+      },
+      "id": 25,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DHT2-Temperature\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DHT2 - Temperature",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Kitchen humidity",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": ""
+              },
+              {
+                "color": "#EAB839",
+                "value": ""
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 35
+      },
+      "id": 24,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DHT2-Humidity\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then float(v: r._value) else 0.0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DHT2 - Humidity",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Living room Door Motion Sensor",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 43
+      },
+      "id": 26,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"DPIR3\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      state: \"DETECTED\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"state\"])\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "DPIR3",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "state": "Event"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "IR remote",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 50,
+            "wrapText": true
+          },
+          "decimals": 0,
+          "fieldMinMax": false,
+          "mappings": [],
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 43
+      },
+      "id": 27,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"IR\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      _time: r._time,\r\n      key: if exists r._value then string(v: r._value) else \"\"\r\n  }))\r\n  |> keep(columns: [\"_time\", \"key\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "IR",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "_time": "Time",
+              "key": "Key"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Bedroom RGB LED",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-red",
+                  "index": 0,
+                  "text": "⚫️"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "💡"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 43
+      },
+      "id": 28,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"BRGB\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> last()\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if r._value then 1 else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "BRGB",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Bedroom RGB LED",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 1,
+            "drawStyle": "bars",
+            "fillOpacity": 88,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "fieldMinMax": true,
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "ON"
+                },
+                "-1": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "OFF"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "max": 1,
+          "min": -1,
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 43
+      },
+      "id": 29,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "bfd8rsmo0uznka"
+          },
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"BRGB\")\r\n  |> filter(fn: (r) => r._field == \"measurement\")\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      value_num: if exists r._value then (if r._value then 1 else -1) else 0\r\n  }))\r\n  |> keep(columns: [\"_time\", \"value_num\"])\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "BRGB All",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 51
+      },
+      "id": 30,
+      "panels": [],
+      "title": "Events",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "bfd8rsmo0uznka"
+      },
+      "description": "Triggered events",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "color-text"
+            },
+            "filterable": true,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 50,
+            "wrapText": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "ALARM": {
+                  "color": "dark-red",
+                  "index": 2
+                },
+                "ALARM_STOPPED": {
+                  "color": "dark-yellow",
+                  "index": 3
+                },
+                "ARMED": {
+                  "color": "dark-green",
+                  "index": 1
+                },
+                "DISARMED": {
+                  "color": "dark-orange",
+                  "index": 0
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
+      "id": 31,
+      "options": {
+        "cellHeight": "md",
+        "enablePagination": true,
+        "frameIndex": 2,
+        "frozenColumns": {},
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "type"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "query": "from(bucket: \"smart_home_db\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"events\")\r\n  |> filter(fn: (r) => r._field == \"reason\")\r\n  |> group()\r\n  |> rename(columns: {_value: \"reason\"})\r\n  |> keep(columns: [\"type\", \"reason\", \"_time\"])\r\n  |> sort(columns: [\"_time\"], desc: true)\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Event log",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "reason": false
+            },
+            "includeByName": {},
+            "indexByName": {
+              "_time": 2,
+              "reason": 1,
+              "type": 0
+            },
+            "orderByMode": "manual",
+            "renameByName": {
+              "_time": "Time",
+              "reason": "Reason",
+              "type": "Type"
+            }
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
   "preload": false,
+  "refresh": "auto",
   "schemaVersion": 42,
   "tags": [],
   "templating": {
@@ -792,5 +2368,5 @@
   "timezone": "browser",
   "title": "SmartHome",
   "uid": "advdt88",
-  "version": 39
+  "version": 3
 }

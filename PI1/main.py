@@ -6,8 +6,10 @@ from components.dus1 import run_dus1
 from components.dms import run_dms
 from components.dpir1 import run_dpir1
 from components.dl import run_dl
+from components.webc import run_webc
 
 from console.console import console_loop
+from comm.listener import start_listener
 
 from actuators.ActuatorRegistry import ActuatorRegistry
 import time
@@ -39,6 +41,7 @@ if __name__ == "__main__":
         run_dus1(settings['DUS1'], threads, stop_event)
         run_dms(settings['DMS'], threads, stop_event)
         run_dpir1(settings['DPIR1'], threads, stop_event)
+        run_webc(settings['WEBC'], threads, stop_event)
 
         actuator_registry = ActuatorRegistry()
         db_actuator = run_db(settings['DB'])
@@ -53,6 +56,11 @@ if __name__ == "__main__":
         console_thread.daemon = False
         console_thread.start()
         threads.append(console_thread)
+        
+        listener_thread = threading.Thread(target=start_listener, args=(actuator_registry, stop_event))
+        listener_thread.daemon = False
+        listener_thread.start()
+        threads.append(listener_thread)
 
         while not stop_event.is_set():
             time.sleep(1)
@@ -62,8 +70,9 @@ if __name__ == "__main__":
         stop_event.set()
     
     finally:
+        stop_event.set()
         for t in threads:
-            stop_event.set()
+            t.join()
                 
         cleanup_gpio()
         
